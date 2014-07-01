@@ -18,17 +18,24 @@ paths = {
     'src/bower_components/phaser-official/build/phaser.min.js'
   ],
   js:     ['src/js/**/*.js'],
-  ts:     ['src/js/**/*.ts'],
+  ts:     ['src/ts/**/*.ts'],
   dist:   './dist/'
 };
 
 var typescript = require('gulp-tsc');
 
-gulp.task('compile', function(){
+gulp.task('compile-ts', function(){
   gulp.src(paths.ts)
     .pipe(typescript())
-    .pipe(gulp.dest(paths.dist))
+    .pipe(gulp.dest(paths.dist + 'js'))
 });
+
+gulp.task('compile-ts-dev', function(){
+  gulp.src(paths.ts)
+    .pipe(typescript())
+    .pipe(gulp.dest('./src/js'));
+});
+
 
 gulp.task('clean', function () {
   gulp.src(paths.dist, {read: false})
@@ -100,9 +107,9 @@ gulp.task('connect', function () {
 
 gulp.task('watch', function () {
   gulp.watch(paths.js, ['lint']);
-  gulp.watch(['./src/index.html', paths.css, paths.js], ['html']);
+  gulp.watch(['./src/index.html', paths.css, paths.ts], ['compile-ts-dev', 'html']);
 });
 
 gulp.task('default', ['connect', 'watch']);
-gulp.task('build', ['clean', 'copy', 'compile', 'uglify', 'minifycss', 'processhtml', 'minifyhtml']);
+gulp.task('build', ['clean', 'copy', 'compile-ts', 'uglify', 'minifycss', 'processhtml', 'minifyhtml']);
 
