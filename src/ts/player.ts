@@ -10,11 +10,13 @@ module Crimbo {
     player: Phaser.Sprite;
     overworld: Crimbo.Overworld;
     moving: String;
+    _turnComplete: boolean;
 
     constructor(game: Phaser.Game, overworld: Crimbo.Overworld) {
       this.game = game;
       this.overworld = overworld;
       this.moving = null;
+
     }
 
     create = () => {
@@ -34,24 +36,38 @@ module Crimbo {
       switch(this.moving) {
         case "right":
           this.player.x += Player.MoveSpeed;
-          if (this.player.x % Crimbo.SpriteSize === 0) this.moving = null;
+          if (this.player.x % Crimbo.SpriteSize === 0) this.setTurnComplete();
           break;
         case "left":
           this.player.x -= Player.MoveSpeed;
-          if (this.player.x % Crimbo.SpriteSize === 0) this.moving = null;
+          if (this.player.x % Crimbo.SpriteSize === 0) this.setTurnComplete();
           break;
         case "up":
           this.player.y -= Player.MoveSpeed;
-          if (this.player.y % Crimbo.SpriteSize === 0) this.moving = null;
+          if (this.player.y % Crimbo.SpriteSize === 0) this.setTurnComplete();
           break;
         case "down":
           this.player.y += Player.MoveSpeed;
-          if (this.player.y % Crimbo.SpriteSize === 0) this.moving = null;
+          if (this.player.y % Crimbo.SpriteSize === 0) this.setTurnComplete();
       }
     }
 
     render = () => {
       this.game.debug.spriteInfo(this.player, 20, 32);
+    }
+
+
+    setTurnComplete = () => {
+      this.moving = null;
+      this._turnComplete = true;
+    }
+
+    isTurnComplete = () => {
+      if (this._turnComplete === true) {
+        this._turnComplete = false;
+        return true;
+      }
+      return false;
     }
 
     setMoving = () => {

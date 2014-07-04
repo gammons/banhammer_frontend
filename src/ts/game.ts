@@ -37,6 +37,9 @@ module Crimbo {
     update = () => {
       this.overworld.update();
       this.player.update();
+      if (this.player.isTurnComplete()) {
+        console.log("Player turn complete");
+      }
     }
     render = () => {
       this.overworld.render();

@@ -29,6 +29,9 @@ var Crimbo;
             this.update = function () {
                 _this.overworld.update();
                 _this.player.update();
+                if (_this.player.isTurnComplete()) {
+                    console.log("Player turn complete");
+                }
             };
             this.render = function () {
                 _this.overworld.render();
