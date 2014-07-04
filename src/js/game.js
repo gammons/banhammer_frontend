@@ -20,22 +20,57 @@ var CrimboGame = (function () {
 
         //set up sprite
         this.sprite = this.game.add.sprite(32, 32, 'mushroom');
+        window.sprite = this.sprite;
         this.game.camera.follow(this.sprite);
+        // set up physics
+        // this.game.physics.startSystem(Phaser.Physics.P2JS);
+        // this.game.physics.p2.enable(this.sprite);
+        // //this.sprite.body.setZeroDamping();
+        // this.sprite.body.damping = 0.5;
+        // this.sprite.body.fixedRotation = true;
     };
 
     CrimboGame.prototype.update = function () {
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-            this.sprite.x = this.sprite.x - +32;
-        } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-            this.sprite.x += 32;
+        switch (this.moving) {
+            case "right":
+                this.sprite.x += 2;
+                if (this.sprite.x % 32 === 0)
+                    this.moving = null;
+                break;
         }
 
-        if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-            this.sprite.y -= 32;
-        } else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-            this.sprite.y += 32;
-        } else if (this.game.input.keyboard.isDown(69)) {
+        // while (this.sprite.x % 32 !== 0)
+        //   this.sprite.x += 2;
+        //     if ((this.sprite.body.velocity.x > 0) || (this.sprite.body.velocity.y > 0)) { return; }
+        //     //this.sprite.body.setZeroVelocity();
+        //     if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
+        //     {
+        //       this.sprite.body.moveLeft(32);
+        //     }
+        //if (this.moving == null) this.setMoving();
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+            this.moving = "right";
+            //this.sprite.body.moveRight(32);
         }
+    };
+
+    CrimboGame.prototype.setMoving = function () {
+        if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+            this.moving = "right";
+            //this.sprite.body.moveRight(32);
+        }
+        //     if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP))
+        //     {
+        //       this.sprite.body.moveUp(32);
+        //     }
+        //     else if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
+        //     {
+        //       this.sprite.body.moveDown(32);
+        //     }
+        //     else if (this.game.input.keyboard.isDown(69))
+        //     {
+        //
+        //     }
     };
     CrimboGame.prototype.render = function () {
         //this.game.debug.cameraInfo(this.game.camera, 32, 32);
@@ -45,5 +80,5 @@ var CrimboGame = (function () {
 })();
 
 window.onload = function () {
-    var game = new CrimboGame();
+    window.game = new CrimboGame();
 };
