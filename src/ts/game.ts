@@ -1,16 +1,13 @@
 /// <reference path="phaser.d.ts"/>
 
-module Phaser {
-  class Game {
-    crimbo: CrimboGame;
-  }
-}
-
 class CrimboGame {
   static MoveSpeed = 4;
+  static SpriteSize = 32;
 
   game: Phaser.Game;
   sprite: Phaser.Sprite;
+  map: Phaser.Tilemap;
+  layer: Phaser.TilemapLayer;
   moving: String;
 
   constructor() {
@@ -28,10 +25,11 @@ class CrimboGame {
 
   create = () => {
     // set up tilemap
-    var map = this.game.add.tilemap('map');
-    map.addTilesetImage('ground_1x1');
-    var layer =  map.createLayer('Tile Layer 1');
-    layer.resizeWorld();
+    this.map = this.game.add.tilemap('map');
+    this.map.addTilesetImage('ground_1x1');
+    this.layer =  this.map.createLayer('Tile Layer 1');
+    this.layer.debug = true;
+    this.layer.resizeWorld();
 
     //set up sprite
     this.sprite =  this.game.add.sprite(32, 32, 'mushroom');
@@ -40,10 +38,21 @@ class CrimboGame {
   }
 
   setMoving = () => {
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) { this.moving = "right"; }
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) { this.moving = "left"; }
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) { this.moving = "up"; }
-    if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) { this.moving = "down"; }
+    if ((this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) &&
+      (!this.hasSolidTile(this.sprite.x + CrimboGame.SpriteSize, this.sprite.y)))
+        this.moving = "right"; 
+
+    if ((this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) &&
+      (!this.hasSolidTile(this.sprite.x - CrimboGame.SpriteSize, this.sprite.y)))
+        this.moving = "left";
+
+    if ((this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) &&
+      (!this.hasSolidTile(this.sprite.x, this.sprite.y - CrimboGame.SpriteSize)))
+        this.moving = "up";
+
+    if ((this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) &&
+      (!this.hasSolidTile(this.sprite.x, this.sprite.y + CrimboGame.SpriteSize)))
+        this.moving = "down";
   }
 
   update = () => {
@@ -58,20 +67,23 @@ class CrimboGame {
     switch(this.moving) {
       case "right":
         this.sprite.x += CrimboGame.MoveSpeed;
-        if (this.sprite.x % 32 === 0) this.moving = null;
+        if (this.sprite.x % CrimboGame.SpriteSize === 0) this.moving = null;
         break;
       case "left":
         this.sprite.x -= CrimboGame.MoveSpeed;
-        if (this.sprite.x % 32 === 0) this.moving = null;
+        if (this.sprite.x % CrimboGame.SpriteSize === 0) this.moving = null;
         break;
       case "up":
         this.sprite.y -= CrimboGame.MoveSpeed;
-        if (this.sprite.y % 32 === 0) this.moving = null;
+        if (this.sprite.y % CrimboGame.SpriteSize === 0) this.moving = null;
         break;
       case "down":
         this.sprite.y += CrimboGame.MoveSpeed;
-        if (this.sprite.y % 32 === 0) this.moving = null;
+        if (this.sprite.y % CrimboGame.SpriteSize === 0) this.moving = null;
     }
+  }
+  hasSolidTile = (x: number, y: number) => {
+    return (this.layer.getTiles(x,y,0,0)[0].index > 0);
   }
 
   render = () => {

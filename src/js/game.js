@@ -1,13 +1,4 @@
 /// <reference path="phaser.d.ts"/>
-var Phaser;
-(function (Phaser) {
-    var Game = (function () {
-        function Game() {
-        }
-        return Game;
-    })();
-})(Phaser || (Phaser = {}));
-
 var CrimboGame = (function () {
     function CrimboGame() {
         var _this = this;
@@ -19,10 +10,11 @@ var CrimboGame = (function () {
         };
         this.create = function () {
             // set up tilemap
-            var map = _this.game.add.tilemap('map');
-            map.addTilesetImage('ground_1x1');
-            var layer = map.createLayer('Tile Layer 1');
-            layer.resizeWorld();
+            _this.map = _this.game.add.tilemap('map');
+            _this.map.addTilesetImage('ground_1x1');
+            _this.layer = _this.map.createLayer('Tile Layer 1');
+            _this.layer.debug = true;
+            _this.layer.resizeWorld();
 
             //set up sprite
             _this.sprite = _this.game.add.sprite(32, 32, 'mushroom');
@@ -30,18 +22,17 @@ var CrimboGame = (function () {
             _this.game.camera.follow(_this.sprite);
         };
         this.setMoving = function () {
-            if (_this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+            if ((_this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) && (!_this.hasSolidTile(_this.sprite.x + CrimboGame.SpriteSize, _this.sprite.y)))
                 _this.moving = "right";
-            }
-            if (_this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+
+            if ((_this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) && (!_this.hasSolidTile(_this.sprite.x - CrimboGame.SpriteSize, _this.sprite.y)))
                 _this.moving = "left";
-            }
-            if (_this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+
+            if ((_this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) && (!_this.hasSolidTile(_this.sprite.x, _this.sprite.y - CrimboGame.SpriteSize)))
                 _this.moving = "up";
-            }
-            if (_this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+
+            if ((_this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) && (!_this.hasSolidTile(_this.sprite.x, _this.sprite.y + CrimboGame.SpriteSize)))
                 _this.moving = "down";
-            }
         };
         this.update = function () {
             if (_this.moving === null) {
@@ -54,24 +45,27 @@ var CrimboGame = (function () {
             switch (_this.moving) {
                 case "right":
                     _this.sprite.x += CrimboGame.MoveSpeed;
-                    if (_this.sprite.x % 32 === 0)
+                    if (_this.sprite.x % CrimboGame.SpriteSize === 0)
                         _this.moving = null;
                     break;
                 case "left":
                     _this.sprite.x -= CrimboGame.MoveSpeed;
-                    if (_this.sprite.x % 32 === 0)
+                    if (_this.sprite.x % CrimboGame.SpriteSize === 0)
                         _this.moving = null;
                     break;
                 case "up":
                     _this.sprite.y -= CrimboGame.MoveSpeed;
-                    if (_this.sprite.y % 32 === 0)
+                    if (_this.sprite.y % CrimboGame.SpriteSize === 0)
                         _this.moving = null;
                     break;
                 case "down":
                     _this.sprite.y += CrimboGame.MoveSpeed;
-                    if (_this.sprite.y % 32 === 0)
+                    if (_this.sprite.y % CrimboGame.SpriteSize === 0)
                         _this.moving = null;
             }
+        };
+        this.hasSolidTile = function (x, y) {
+            return (_this.layer.getTiles(x, y, 0, 0)[0].index > 0);
         };
         this.render = function () {
             _this.game.debug.spriteInfo(_this.sprite, 20, 32);
@@ -81,6 +75,7 @@ var CrimboGame = (function () {
         this.moving = null;
     }
     CrimboGame.MoveSpeed = 4;
+    CrimboGame.SpriteSize = 32;
     return CrimboGame;
 })();
 
