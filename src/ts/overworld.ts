@@ -98,7 +98,6 @@ module Crimbo {
       }
     }
     hasSolidTile = (x: number, y: number) => {
-      console.log("looking at tile at ", x, y);
       return (this.layer.getTiles(x,y,0,0)[0].index > 0);
     }
   }

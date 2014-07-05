@@ -42,6 +42,7 @@ module Crimbo {
       if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) return("left");
       if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) return("up");
       if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) return("down");
+      if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) return("space");
       return null;
     }
     render = () => {

@@ -39,6 +39,8 @@ var Crimbo;
                     return ("up");
                 if (_this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
                     return ("down");
+                if (_this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
+                    return ("space");
                 return null;
             };
             this.render = function () {
