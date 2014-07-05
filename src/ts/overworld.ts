@@ -38,7 +38,7 @@ module Crimbo {
       switch(this.state) {
         case Crimbo.OverworldState.Waiting:
           if (direction != null)  {
-            if (this.playerCanMoveTo(direction)) {
+            if (this.entityCanMoveTo(this.player, direction)) {
               this.player.move(direction);
               this.playerView.setDirection(direction);
             }
@@ -64,19 +64,19 @@ module Crimbo {
       this.playerView.render();
     }
 
-    playerCanMoveTo = (direction: string) => {
+    entityCanMoveTo = (entity: Crimbo.CrimboEntity, direction: string) => {
       switch(direction) {
         case "right":
-          return(!this.hasSolidTile((this.player.x + 1) * Crimbo.TileSize, this.player.y * Crimbo.TileSize));
+          return(!this.hasSolidTile((entity.x + 1) * Crimbo.TileSize, entity.y * Crimbo.TileSize));
           break;
         case "left":
-          return(!this.hasSolidTile((this.player.x - 1) * Crimbo.TileSize, this.player.y * Crimbo.TileSize));
+          return(!this.hasSolidTile((entity.x - 1) * Crimbo.TileSize, entity.y * Crimbo.TileSize));
           break;
         case "up":
-          return(!this.hasSolidTile(this.player.x * Crimbo.TileSize, (this.player.y - 1) * Crimbo.TileSize));
+          return(!this.hasSolidTile(entity.x * Crimbo.TileSize, (entity.y - 1) * Crimbo.TileSize));
           break;
         case "down":
-          return(!this.hasSolidTile(this.player.x * Crimbo.TileSize, (this.player.y + 1) * Crimbo.TileSize));
+          return(!this.hasSolidTile(entity.x * Crimbo.TileSize, (entity.y + 1) * Crimbo.TileSize));
           break;
       }
     }
