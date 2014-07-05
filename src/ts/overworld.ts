@@ -44,13 +44,7 @@ module Crimbo {
     update = (direction: string) => {
       switch(this.state) {
         case Crimbo.OverworldState.Waiting:
-          if (direction != null)  {
-            if (this.entityCanMoveTo(this.player, direction)) {
-              this.player.move(direction);
-              this.playerView.setDirection(direction);
-            }
-            this.state = Crimbo.OverworldState.PlayerMove;
-          }
+          if (direction != null) this.movePlayer(direction);
           break;
         case Crimbo.OverworldState.PlayerMove:
           this.playerView.update();
@@ -59,13 +53,30 @@ module Crimbo {
           }
           break;
         case Crimbo.OverworldState.MonsterMove:
-          this.monsterView.update();
           if (this.monsterView.finishedMoving()) {
-            this.state = Crimbo.OverworldState.Waiting;
+            this.monster.getMove();
+            while (!this.entityCanMoveTo(this.monster, this.monster.potentialDirection)) {
+              this.monster.getMove();
+            }
+            this.monsterView.setDirection(this.monster.potentialDirection);
+          } else {
+            this.monsterView.update();
+            if (this.monsterView.finishedMoving()) {
+              this.state = Crimbo.OverworldState.Waiting;
+            }
           }
           break;
       }
     }
+
+    movePlayer = (direction: string) => {
+      if (this.entityCanMoveTo(this.player, direction)) {
+        this.player.move(direction);
+        this.playerView.setDirection(direction);
+      }
+      this.state = Crimbo.OverworldState.PlayerMove;
+    }
+
     render = () => { 
       this.playerView.render();
     }

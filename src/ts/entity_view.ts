@@ -15,10 +15,7 @@ module Crimbo {
       this.entity = entity;
     }
 
-    create = () => {
-      // this.sprite =  this.game.add.sprite(this.player.x * Crimbo.TileSize, this.player.y * Crimbo.TileSize, 'mushroom');
-      // this.game.camera.follow(this.sprite);
-    }
+    create = () => { }
 
     update = () => {
       if (this._moving) {
@@ -49,9 +46,7 @@ module Crimbo {
           if (this.sprite.y % Crimbo.TileSize === 0) this._moving = null;
       }
     }
-    render = () => {
-      //this.game.debug.spriteInfo(this.sprite, 20, 32);
-    }
+    render = () => { }
 
     finishedMoving = () => {
       return (this._moving == null)
