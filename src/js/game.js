@@ -24,24 +24,29 @@ var Crimbo;
             };
             this.create = function () {
                 _this.overworld.create();
-                _this.player.create();
             };
             this.update = function () {
-                _this.overworld.update();
-                _this.player.update();
-                if (_this.player.isTurnComplete()) {
-                    console.log("Player turn complete");
-                }
+                var inputPressed = _this.handleInput();
+                _this.overworld.update(inputPressed);
+            };
+            this.handleInput = function () {
+                if (_this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
+                    return ("right");
+                if (_this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT))
+                    return ("left");
+                if (_this.game.input.keyboard.isDown(Phaser.Keyboard.UP))
+                    return ("up");
+                if (_this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN))
+                    return ("down");
+                return null;
             };
             this.render = function () {
                 _this.overworld.render();
-                _this.player.render();
             };
             this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', {
                 preload: this.preload, create: this.create, update: this.update, render: this.render });
             this.state = 0 /* Overworld */;
             this.overworld = new Crimbo.Overworld(this.game);
-            this.player = new Crimbo.Player(this.game, this.overworld);
         }
         return CrimboGame;
     })();

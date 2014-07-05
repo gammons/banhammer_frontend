@@ -1,91 +1,22 @@
 /// <reference path="phaser.d.ts"/>
 /// <reference path="constants.ts"/>
-/// <reference path="overworld.ts"/>
-/// <reference path="gameinterface.ts"/>
 module Crimbo {
-  export class Player implements Crimbo.GameInterface {
-    static MoveSpeed = 4;
+  export class Player {
+    x: number;
+    y: number;
 
-    game: Phaser.Game;
-    player: Phaser.Sprite;
-    overworld: Crimbo.Overworld;
-    moving: String;
-    _turnComplete: boolean;
-
-    constructor(game: Phaser.Game, overworld: Crimbo.Overworld) {
-      this.game = game;
-      this.overworld = overworld;
-      this.moving = null;
-
+    constructor() {
+      this.x = 1;
+      this.y = 1;
     }
 
-    create = () => {
-      this.player =  this.game.add.sprite(32, 32, 'mushroom');
-      this.game.camera.follow(this.player);
-    }
-
-    update = () => {
-      if (this.moving === null) { 
-        this.setMoving(); 
-      } else {
-        this.move();
+    move = (direction: string) => {
+      switch(direction) {
+        case "left": this.x = this.x - 1; break;
+        case "right": this.x += 1; break;
+        case "up": this.y = this.y - 1; break;
+        case "down": this.y += 1; break;
       }
-    }
-
-    move = () => {
-      switch(this.moving) {
-        case "right":
-          this.player.x += Player.MoveSpeed;
-          if (this.player.x % Crimbo.SpriteSize === 0) this.setTurnComplete();
-          break;
-        case "left":
-          this.player.x -= Player.MoveSpeed;
-          if (this.player.x % Crimbo.SpriteSize === 0) this.setTurnComplete();
-          break;
-        case "up":
-          this.player.y -= Player.MoveSpeed;
-          if (this.player.y % Crimbo.SpriteSize === 0) this.setTurnComplete();
-          break;
-        case "down":
-          this.player.y += Player.MoveSpeed;
-          if (this.player.y % Crimbo.SpriteSize === 0) this.setTurnComplete();
-      }
-    }
-
-    render = () => {
-      this.game.debug.spriteInfo(this.player, 20, 32);
-    }
-
-
-    setTurnComplete = () => {
-      this.moving = null;
-      this._turnComplete = true;
-    }
-
-    isTurnComplete = () => {
-      if (this._turnComplete === true) {
-        this._turnComplete = false;
-        return true;
-      }
-      return false;
-    }
-
-    setMoving = () => {
-      if ((this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) &&
-        (!this.overworld.hasSolidTile(this.player.x + Crimbo.SpriteSize, this.player.y)))
-          this.moving = "right"; 
-
-      if ((this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) &&
-        (!this.overworld.hasSolidTile(this.player.x - Crimbo.SpriteSize, this.player.y)))
-          this.moving = "left";
-
-      if ((this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) &&
-        (!this.overworld.hasSolidTile(this.player.x, this.player.y - Crimbo.SpriteSize)))
-          this.moving = "up";
-
-      if ((this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) &&
-        (!this.overworld.hasSolidTile(this.player.x, this.player.y + Crimbo.SpriteSize)))
-          this.moving = "down";
     }
   }
 }

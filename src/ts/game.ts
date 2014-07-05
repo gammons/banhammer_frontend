@@ -12,14 +12,12 @@ module Crimbo {
     game: Phaser.Game;
     state: GameStatus;
     overworld: Crimbo.Overworld;
-    player: Crimbo.Player;
 
     constructor() {
       this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create, update:
         this.update, render: this.render});
       this.state = GameStatus.Overworld;
       this.overworld = new Crimbo.Overworld(this.game);
-      this.player = new Crimbo.Player(this.game, this.overworld);
     }
 
     preload = () => {
@@ -31,19 +29,22 @@ module Crimbo {
 
     create = () => {
       this.overworld.create();
-      this.player.create();
     }
 
     update = () => {
-      this.overworld.update();
-      this.player.update();
-      if (this.player.isTurnComplete()) {
-        console.log("Player turn complete");
-      }
+      var inputPressed = this.handleInput()
+      this.overworld.update(inputPressed);
+    }
+
+    handleInput = () => {
+      if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) return("right");
+      if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) return("left");
+      if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) return("up");
+      if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) return("down");
+      return null;
     }
     render = () => {
       this.overworld.render();
-      this.player.render();
     }
   }
 }

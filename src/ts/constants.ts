@@ -1,3 +1,3 @@
 module Crimbo {
-  export var SpriteSize: number = 32
+  export var TileSize: number = 32
 }
