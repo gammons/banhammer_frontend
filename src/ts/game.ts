@@ -22,6 +22,7 @@ module Crimbo {
 
     preload = () => {
       this.game.load.image('mushroom', '/assets/mushroom32x32.png');
+      this.game.load.image('purple_ball', '/assets/purple_ball.png');
       this.game.load.tilemap('map', 'assets/tilemaps/maps/collision_test.json', null, Phaser.Tilemap.TILED_JSON);
       this.game.load.image('ground_1x1', 'assets/tilemaps/tiles/ground_1x1.png');
       this.game.load.image('phaser', 'assets/sprites/phaser-dude.png');

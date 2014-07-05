@@ -2,6 +2,8 @@
 /// <reference path="constants.ts"/>
 /// <reference path="player.ts"/>
 /// <reference path="player_view.ts"/>
+/// <reference path="monster.ts"/>
+/// <reference path="monster_view.ts"/>
 /// <reference path="gameinterface.ts"/>
 module Crimbo {
   export enum OverworldState { Waiting, PlayerMove, MonsterMove};
@@ -12,7 +14,9 @@ module Crimbo {
     map: Phaser.Tilemap;
     layer: Phaser.TilemapLayer;
     player:  Crimbo.Player;
+    monster:  Crimbo.Monster;
     playerView:  Crimbo.PlayerView;
+    monsterView:  Crimbo.MonsterView;
 
     state: Crimbo.OverworldState;
     pressedKey: number;
@@ -21,7 +25,9 @@ module Crimbo {
     constructor(game: Phaser.Game) {
       this.game = game;
       this.player = new Crimbo.Player();
+      this.monster = new Crimbo.Monster();
       this.playerView = new Crimbo.PlayerView(this.game, this.player);
+      this.monsterView = new Crimbo.MonsterView(this.game, this.monster);
       this.state = Crimbo.OverworldState.Waiting;
     }
 
@@ -32,6 +38,7 @@ module Crimbo {
       this.layer.debug = true;
       this.layer.resizeWorld();
       this.playerView.create();
+      this.monsterView.create();
 
     }
     update = (direction: string) => {
@@ -52,12 +59,11 @@ module Crimbo {
           }
           break;
         case Crimbo.OverworldState.MonsterMove:
-          this.state = Crimbo.OverworldState.Waiting;
-          //this.monster.update();
-          // if (this.monster.finishedMoving()) {
-          //   this.state = Crimbo.OverworldState.Waiting;
-          // }
-          // break;
+          this.monsterView.update();
+          if (this.monsterView.finishedMoving()) {
+            this.state = Crimbo.OverworldState.Waiting;
+          }
+          break;
       }
     }
     render = () => { 

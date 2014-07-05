@@ -18,6 +18,7 @@ var Crimbo;
             var _this = this;
             this.preload = function () {
                 _this.game.load.image('mushroom', '/assets/mushroom32x32.png');
+                _this.game.load.image('purple_ball', '/assets/purple_ball.png');
                 _this.game.load.tilemap('map', 'assets/tilemaps/maps/collision_test.json', null, Phaser.Tilemap.TILED_JSON);
                 _this.game.load.image('ground_1x1', 'assets/tilemaps/tiles/ground_1x1.png');
                 _this.game.load.image('phaser', 'assets/sprites/phaser-dude.png');

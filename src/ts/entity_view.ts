@@ -50,7 +50,7 @@ module Crimbo {
       }
     }
     render = () => {
-      this.game.debug.spriteInfo(this.sprite, 20, 32);
+      //this.game.debug.spriteInfo(this.sprite, 20, 32);
     }
 
     finishedMoving = () => {
