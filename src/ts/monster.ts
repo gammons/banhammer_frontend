@@ -6,6 +6,7 @@ module Crimbo {
 
     constructor() {
       super();
+      this._speed = 2;
       this.x = 10;
       this.y = 3;
     }

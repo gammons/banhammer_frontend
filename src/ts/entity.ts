@@ -1,8 +1,11 @@
 /// <reference path="constants.ts"/>
 module Crimbo {
+  export enum EntityState { Awake, Sleeping, Sitting};
+
   export class CrimboEntity {
     x: number;
     y: number;
+    _speed: number;
 
     move = (direction: string) => {
       switch(direction) {
@@ -11,6 +14,9 @@ module Crimbo {
         case "up": this.y = this.y - 1; break;
         case "down": this.y += 1; break;
       }
+    }
+    speed = () => {
+      return this._speed;
     }
   }
 }
