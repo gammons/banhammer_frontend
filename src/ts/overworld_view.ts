@@ -8,7 +8,7 @@
 module Crimbo {
   export enum OverworldState { Waiting, PlayerMove, MonsterMove};
 
-  export class Overworld {
+  export class OverworldView {
 
     numMonsters: number = 3;
 

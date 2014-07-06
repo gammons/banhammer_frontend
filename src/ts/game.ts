@@ -1,23 +1,23 @@
 /// <reference path="phaser.d.ts"/>
 /// <reference path="constants.ts"/>
 /// <reference path="gameinterface.ts"/>
-/// <reference path="overworld.ts"/>
+/// <reference path="overworld_view.ts"/>
 /// <reference path="player.ts"/>
 
 module Crimbo {
-  export enum GameStatus { Overworld, Combat, Pause };
+  export enum GameStatus { OverworldView, Combat, Pause };
 
   export class CrimboGame {
 
     game: Phaser.Game;
     state: GameStatus;
-    overworld: Crimbo.Overworld;
+    overworld: Crimbo.OverworldView;
 
     constructor() {
       this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create, update:
         this.update, render: this.render});
-      this.state = GameStatus.Overworld;
-      this.overworld = new Crimbo.Overworld(this.game);
+      this.state = GameStatus.OverworldView;
+      this.overworld = new Crimbo.OverworldView(this.game);
     }
 
     preload = () => {

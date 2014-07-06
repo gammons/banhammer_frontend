@@ -1,12 +1,12 @@
 /// <reference path="phaser.d.ts"/>
 /// <reference path="constants.ts"/>
 /// <reference path="gameinterface.ts"/>
-/// <reference path="overworld.ts"/>
+/// <reference path="overworld_view.ts"/>
 /// <reference path="player.ts"/>
 var Crimbo;
 (function (Crimbo) {
     (function (GameStatus) {
-        GameStatus[GameStatus["Overworld"] = 0] = "Overworld";
+        GameStatus[GameStatus["OverworldView"] = 0] = "OverworldView";
         GameStatus[GameStatus["Combat"] = 1] = "Combat";
         GameStatus[GameStatus["Pause"] = 2] = "Pause";
     })(Crimbo.GameStatus || (Crimbo.GameStatus = {}));
@@ -48,8 +48,8 @@ var Crimbo;
             };
             this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', {
                 preload: this.preload, create: this.create, update: this.update, render: this.render });
-            this.state = 0 /* Overworld */;
-            this.overworld = new Crimbo.Overworld(this.game);
+            this.state = 0 /* OverworldView */;
+            this.overworld = new Crimbo.OverworldView(this.game);
         }
         return CrimboGame;
     })();
