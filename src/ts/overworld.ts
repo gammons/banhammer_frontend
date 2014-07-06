@@ -10,13 +10,16 @@ module Crimbo {
 
   export class Overworld {
 
+    numMonsters: number = 3;
+
     game: Phaser.Game;
     map: Phaser.Tilemap;
     layer: Phaser.TilemapLayer;
     player:  Crimbo.Player;
-    monster:  Crimbo.Monster;
     playerView:  Crimbo.PlayerView;
-    monsterView:  Crimbo.MonsterView;
+
+    monsters: Crimbo.Monster[];
+    monsterViews: Crimbo.MonsterView[];
 
     state: Crimbo.OverworldState;
     pressedKey: number;
@@ -25,10 +28,22 @@ module Crimbo {
     constructor(game: Phaser.Game) {
       this.game = game;
       this.player = new Crimbo.Player();
-      this.monster = new Crimbo.Monster();
       this.playerView = new Crimbo.PlayerView(this.game, this.player);
-      this.monsterView = new Crimbo.MonsterView(this.game, this.monster);
       this.state = Crimbo.OverworldState.Waiting;
+      this.monsters = [];
+      this.monsterViews = [];
+
+      this.createMonsters();
+    }
+
+    createMonsters = () => {
+      var n = 0;
+      while (n <= this.numMonsters) {
+        var monster = new Crimbo.Monster();
+        this.monsters.push(monster);
+        this.monsterViews.push(new Crimbo.MonsterView(this.game, monster));
+        n++;
+      }
     }
 
     create = () => {
@@ -38,7 +53,8 @@ module Crimbo {
       this.layer.debug = true;
       this.layer.resizeWorld();
       this.playerView.create();
-      this.monsterView.create();
+      _.each(this.monsterViews, (view) => { view.create(); });
+
 
     }
     update = (direction: string) => {
@@ -53,18 +69,7 @@ module Crimbo {
           }
           break;
         case Crimbo.OverworldState.MonsterMove:
-          if (this.monsterView.finishedMoving()) {
-            this.monster.getMove();
-            while (!this.entityCanMoveTo(this.monster, this.monster.potentialDirection)) {
-              this.monster.getMove();
-            }
-            this.monsterView.setDirection(this.monster.potentialDirection);
-          } else {
-            this.monsterView.update();
-            if (this.monsterView.finishedMoving()) {
-              this.state = Crimbo.OverworldState.Waiting;
-            }
-          }
+          this.moveMonsters();
           break;
       }
     }
@@ -77,6 +82,25 @@ module Crimbo {
       this.state = Crimbo.OverworldState.PlayerMove;
     }
 
+    moveMonsters = () => {
+      _.each(this.monsters, (monster, index) => {
+        var monsterView = this.monsterViews[index];
+        if (monsterView.finishedMoving()) {
+          monster.getMove();
+          while (!this.entityCanMoveTo(monster, monster.potentialDirection)) {
+            monster.getMove();
+          }
+          monster.move(monster.potentialDirection);
+          monsterView.setDirection(monster.potentialDirection);
+        } else {
+          monsterView.update();
+          if (monsterView.finishedMoving()) {
+            this.state = Crimbo.OverworldState.Waiting;
+          }
+        }
+      })
+    }
+
     render = () => { 
       this.playerView.render();
     }
@@ -84,21 +108,21 @@ module Crimbo {
     entityCanMoveTo = (entity: Crimbo.CrimboEntity, direction: string) => {
       switch(direction) {
         case "right":
-          return(!this.hasSolidTile((entity.x + 1) * Crimbo.TileSize, entity.y * Crimbo.TileSize));
+          return(!this.hasSolidTile((entity.x + 1), entity.y));
           break;
         case "left":
-          return(!this.hasSolidTile((entity.x - 1) * Crimbo.TileSize, entity.y * Crimbo.TileSize));
+          return(!this.hasSolidTile((entity.x - 1), entity.y));
           break;
         case "up":
-          return(!this.hasSolidTile(entity.x * Crimbo.TileSize, (entity.y - 1) * Crimbo.TileSize));
+          return(!this.hasSolidTile(entity.x, (entity.y - 1)));
           break;
         case "down":
-          return(!this.hasSolidTile(entity.x * Crimbo.TileSize, (entity.y + 1) * Crimbo.TileSize));
+          return(!this.hasSolidTile(entity.x, (entity.y + 1)));
           break;
       }
     }
     hasSolidTile = (x: number, y: number) => {
-      return (this.layer.getTiles(x,y,0,0)[0].index > 0);
+      return (this.map.getTile(x,y, this.layer, true).index > 0);
     }
   }
 }
