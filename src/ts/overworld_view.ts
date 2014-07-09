@@ -42,14 +42,9 @@ module Crimbo {
     }
 
     update = (direction: string) => {
-      if (this.animationsFinished())  {
-        if (direction != null) {
-          this.overworld.update(direction);
-          _.each(this.entityViews, (entityView) => { entityView.update(); });
-        }
-      } else {
-        _.each(this.entityViews, (entityView) => { entityView.update(); });
-      }
+      if (this.animationsFinished())
+        this.overworld.update(direction);
+      _.each(this.entityViews, (entityView) => { entityView.update(); });
     }
     animationsFinished = () => {
       return _.all(this.entityViews, (entityView) => { return (entityView.finishedMoving() === true) });
