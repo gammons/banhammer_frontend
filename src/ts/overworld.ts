@@ -7,7 +7,7 @@ module Crimbo {
   export enum OverworldState { Waiting, PlayerMove, MonsterMove};
 
   export class Overworld {
-    numMonsters: number = 3;
+    numMonsters: number = 1;
     player:  Crimbo.Player;
     map: Phaser.Tile[][];
     monsters: Crimbo.Monster[];
@@ -17,11 +17,13 @@ module Crimbo {
     constructor() {
       this.player = new Crimbo.Player();
       this.monsters = [];
+      _.times(3, () => {
+        this.monsters.push(new Crimbo.Monster());
+      });
       this.turns = 1;
     }
 
     setMap = (map: Phaser.Tile[][]) => {
-      console.log("callling setMap", map);
       this.map = map;
     }
 
@@ -31,27 +33,28 @@ module Crimbo {
 
     update = (direction: string) => {
       //move player
-      if ((direction) && (this.canMove(this.player)) && (this.entityCanMoveTo(this.player, direction))) {
+      if ((this.canMove(this.player)) && (!direction)) return;
+
+      if ((direction) && (this.canMove(this.player)) && (this.entityCanMoveTo(this.player, direction)))
         this.player.move(direction);
 
-        //move monster
-        while (this.monstersCanMove()) {
-          _.each(this.monsters, (monster) => {
-            if (this.canMove(monster))  {
-              monster.move(monster.calculateMove(this));
-            }
-          });
+      //move monster
+      //while (this.monstersCanMove()) {
+      _.each(this.monsters, (monster) => {
+        if (this.canMove(monster))  {
+          monster.move(monster.calculateMove(this));
         }
-        this.turns++;
-      }
-
+      });
+      //}
+      this.turns++;
+      if (this.noOneCanMove()) this.turns++;
 
       // apply item effects
 
       // update the turns if no one can move.
-      if (!this.canMove(this.player)) {
-        this.turns++;
-      }
+      // if (!this.canMove(this.player)) {
+      //   this.turns++;
+      // }
     }
 
     noOneCanMove = () => {

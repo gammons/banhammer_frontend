@@ -15,6 +15,7 @@ module Crimbo {
         case "up": this.y = this.y - 1; break;
         case "down": this.y += 1; break;
       }
+      console.log("coords = ", this.x,this.y);
       this.moved = direction;
     }
     speed = () => {
