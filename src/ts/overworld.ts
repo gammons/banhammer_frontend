@@ -9,7 +9,7 @@ module Crimbo {
   export class Overworld {
     numMonsters: number = 3;
     player:  Crimbo.Player;
-    map: Phaser.Tilemap;
+    map: Phaser.Tile[][];
     monsters: Crimbo.Monster[];
     state: Crimbo.OverworldState;
     turns: number;
@@ -20,7 +20,7 @@ module Crimbo {
       this.turns = 1;
     }
 
-    setMap = (map: Phaser.Tilemap) => {
+    setMap = (map: Phaser.Tile[][]) => {
       console.log("callling setMap", map);
       this.map = map;
     }
@@ -83,8 +83,10 @@ module Crimbo {
           break;
       }
     }
+
+    // I hate this.
     hasSolidTile = (x: number, y: number) => {
-      return (this.map.getTile(x,y, 0, true).index > 0);
+      return (this.map[y][x].index > 0);
     }
   }
 }

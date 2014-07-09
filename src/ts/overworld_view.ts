@@ -37,7 +37,7 @@ module Crimbo {
       this.layer =  this.map.createLayer('Tile Layer 1');
       this.layer.debug = true;
       this.layer.resizeWorld();
-      this.overworld.setMap(this.map);
+      this.overworld.setMap(this.map.layers[0]['data']);
       _.each(this.entityViews, (entityView) => { entityView.create(); });
     }
 

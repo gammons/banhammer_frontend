@@ -20,7 +20,6 @@ module Crimbo {
       this.state = GameStatus.OverworldView;
       this.overworld = new Crimbo.Overworld();
       this.overworldView = new Crimbo.OverworldView(this.game, this.overworld);
-      this.overworld.setMap(this.overworldView.map);
     }
 
     preload = () => {

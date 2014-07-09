@@ -51,7 +51,6 @@ var Crimbo;
             this.state = 0 /* OverworldView */;
             this.overworld = new Crimbo.Overworld();
             this.overworldView = new Crimbo.OverworldView(this.game, this.overworld);
-            this.overworld.setMap(this.overworldView.map);
         }
         return CrimboGame;
     })();
