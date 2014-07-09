@@ -5,10 +5,11 @@ module Crimbo {
   export class EntityView {
     static MoveSpeed = 4;
 
-    _moving: string;
     game: Phaser.Game;
     entity: Crimbo.CrimboEntity;
     sprite: Phaser.Sprite;
+    x: number
+    y: number
 
     constructor(game: Phaser.Game, entity: Crimbo.CrimboEntity) {
       this.game = game;
@@ -18,38 +19,31 @@ module Crimbo {
     create = () => { }
 
     update = () => {
-      if (this._moving) {
-        this.move();
-      }
-    }
-
-    setDirection = (inputPressed: string) => {
-      this._moving = inputPressed;
+      if (!this.finishedMoving()) this.move();
     }
 
     move = () => {
-      switch(this._moving) {
-        case "right":
-          this.sprite.x += EntityView.MoveSpeed;
-          if (this.sprite.x % Crimbo.TileSize === 0) this._moving = null;
-          break;
-        case "left":
-          this.sprite.x -= EntityView.MoveSpeed;
-          if (this.sprite.x % Crimbo.TileSize === 0) this._moving = null;
-          break;
-        case "up":
-          this.sprite.y -= EntityView.MoveSpeed;
-          if (this.sprite.y % Crimbo.TileSize === 0) this._moving = null;
-          break;
-        case "down":
-          this.sprite.y += EntityView.MoveSpeed;
-          if (this.sprite.y % Crimbo.TileSize === 0) this._moving = null;
+      // move x
+      if (this.x < this.entity.x) {
+        this.sprite.x += EntityView.MoveSpeed;
+      } else if (this.x > this.entity.x) {
+        this.sprite.x -= EntityView.MoveSpeed;
       }
+      if (this.sprite.x % Crimbo.TileSize === 0) this.x = this.entity.x;
+
+      // move y
+      if (this.y < this.entity.y) {
+        this.sprite.y += EntityView.MoveSpeed;
+      } else if (this.y > this.entity.y) {
+        this.sprite.y -= EntityView.MoveSpeed;
+      }
+      if (this.sprite.y % Crimbo.TileSize === 0) this.y = this.entity.y;
     }
+
     render = () => { }
 
     finishedMoving = () => {
-      return (this._moving == null)
+      return ((this.entity.x === this.x) && (this.entity.y == this.y));
     }
     
   }

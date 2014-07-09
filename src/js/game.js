@@ -24,11 +24,11 @@ var Crimbo;
                 _this.game.load.image('phaser', 'assets/sprites/phaser-dude.png');
             };
             this.create = function () {
-                _this.overworld.create();
+                _this.overworldView.create();
             };
             this.update = function () {
                 var inputPressed = _this.handleInput();
-                _this.overworld.update(inputPressed);
+                _this.overworldView.update(inputPressed);
             };
             this.handleInput = function () {
                 if (_this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT))
@@ -44,12 +44,14 @@ var Crimbo;
                 return null;
             };
             this.render = function () {
-                _this.overworld.render();
+                _this.overworldView.render();
             };
             this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', {
                 preload: this.preload, create: this.create, update: this.update, render: this.render });
             this.state = 0 /* OverworldView */;
-            this.overworld = new Crimbo.OverworldView(this.game);
+            this.overworld = new Crimbo.Overworld();
+            this.overworldView = new Crimbo.OverworldView(this.game, this.overworld);
+            this.overworld.setMap(this.overworldView.map);
         }
         return CrimboGame;
     })();

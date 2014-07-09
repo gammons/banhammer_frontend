@@ -11,13 +11,16 @@ module Crimbo {
 
     game: Phaser.Game;
     state: GameStatus;
-    overworld: Crimbo.OverworldView;
+    overworldView: Crimbo.OverworldView;
+    overworld: Crimbo.Overworld;
 
     constructor() {
       this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create, update:
         this.update, render: this.render});
       this.state = GameStatus.OverworldView;
-      this.overworld = new Crimbo.OverworldView(this.game);
+      this.overworld = new Crimbo.Overworld();
+      this.overworldView = new Crimbo.OverworldView(this.game, this.overworld);
+      this.overworld.setMap(this.overworldView.map);
     }
 
     preload = () => {
@@ -29,12 +32,12 @@ module Crimbo {
     }
 
     create = () => {
-      this.overworld.create();
+      this.overworldView.create();
     }
 
     update = () => {
       var inputPressed = this.handleInput()
-      this.overworld.update(inputPressed);
+      this.overworldView.update(inputPressed);
     }
 
     handleInput = () => {
@@ -46,7 +49,7 @@ module Crimbo {
       return null;
     }
     render = () => {
-      this.overworld.render();
+      this.overworldView.render();
     }
   }
 }

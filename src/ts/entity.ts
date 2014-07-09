@@ -6,6 +6,7 @@ module Crimbo {
     x: number;
     y: number;
     _speed: number;
+    moved: string;
 
     move = (direction: string) => {
       switch(direction) {
@@ -14,6 +15,7 @@ module Crimbo {
         case "up": this.y = this.y - 1; break;
         case "down": this.y += 1; break;
       }
+      this.moved = direction;
     }
     speed = () => {
       return this._speed;

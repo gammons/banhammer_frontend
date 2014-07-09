@@ -1,5 +1,6 @@
 /// <reference path="entity.ts"/>
 /// <reference path="constants.ts"/>
+/// <reference path="overworld.ts"/>
 module Crimbo {
   export class Monster extends Crimbo.CrimboEntity {
     potentialDirection: string;
@@ -11,10 +12,15 @@ module Crimbo {
       this.y = 3;
     }
 
-    getMove = () => {
-      var rnd = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+    calculateMove = (overworld: Crimbo.Overworld) => {
       var directions = ['left','right','up','down',null];
-      this.potentialDirection = directions[rnd];
+      var rnd = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+      var direction = directions[rnd];
+      while(!overworld.entityCanMoveTo(this, direction)) {
+        rnd = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+        direction = directions[rnd];
+      }
+      return direction;
     }
   }
 }
