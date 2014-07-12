@@ -41,27 +41,27 @@ module Crimbo {
 
     movePlayer = (direction) => {
       if ((direction) && (this.canMove(this.player)) && (this.entityCanMoveTo(this.player, direction))) {
-        if (this.entityWillHitAnotherEntity(this.player, direction)) {
-          //this.player.attack(this.entityToAttack(this.player, direction));
-        } else {
-          this.player.move(direction);
-        }
+        this.moveEntity(this.player, direction);
       }
     }
 
     moveMonsters = () => {
       _.each(this.monsters, (monster) => {
         if (this.canMove(monster))  {
-          if (this.entityWillHitAnotherEntity(monster, move)) {
-            //monster.attack(this.entityToAttack(monster, move));
-          } else {
-            var move = monster.calculateMove(this);
-            monster.move(move);
-          }
+          var move = monster.calculateMove(this);
+          this.moveEntity(monster, move);
         }
       });
     }
 
+    moveEntity = (entity: Crimbo.CrimboEntity, direction: string) => {
+      var entityToAttack = this.entityWillHitAnotherEntity(entity, direction);
+      if (entityToAttack) {
+        entity.attack(entityToAttack);
+      } else {
+        entity.move(direction);
+      }
+    }
     noOneCanMove = () => {
       return ((!this.canMove(this.player)) && (_.all(this.monsters, (monster) => { return !this.canMove(monster) })))
     }
@@ -76,15 +76,17 @@ module Crimbo {
     }
     entityWillHitAnotherEntity = (entity: Crimbo.CrimboEntity , move: string) => {
       switch(move) { 
-        case "right": this.isThereAnEntityAt(entity.x + 1, entity.y);break;
-        case "left": this.isThereAnEntityAt(entity.x + 1, entity.y);break;
-        case "up": this.isThereAnEntityAt(entity.x + 1, entity.y);break;
-        case "down": this.isThereAnEntityAt(entity.x + 1, entity.y);break;
+        case "right": return this.isThereAnEntityAt(entity.x + 1, entity.y);break;
+        case "left": return this.isThereAnEntityAt(entity.x - 1, entity.y);break;
+        case "up": return this.isThereAnEntityAt(entity.x, entity.y - 1);break;
+        case "down": return this.isThereAnEntityAt(entity.x, entity.y + 1);break;
       }
     }
 
     isThereAnEntityAt = (x: number, y: number)  => {
-      return (this.player.isAt(x,y) || _.any(this.monsters, (monster) => { return monster.isAt(x,y) }));
+      if (this.player.isAt(x,y)) return this.player;
+      var monster = _.find(this.monsters, (monster) => { return monster.isAt(x,y) });
+      return monster;
     }
 
     entityCanMoveTo = (entity: Crimbo.CrimboEntity, direction: string) => {
