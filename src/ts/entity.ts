@@ -5,11 +5,13 @@ module Crimbo {
   export class CrimboEntity {
     x: number;
     y: number;
+    name: string;
     _speed: number;
     moved: string;
     hitPoints: number;
     armorClass: number;
     strength: number;
+
 
     move = (direction: string) => {
       switch(direction) {
@@ -29,9 +31,8 @@ module Crimbo {
     }
 
     attack = (entity: Crimbo.CrimboEntity) => {
-
-
-
+      var msg = this.name + " attacks " + entity.name + "!"
+      Crimbo.Message.notify(msg);
     }
   }
 }

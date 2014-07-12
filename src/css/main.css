@@ -5,5 +5,7 @@ body {
 .messages {
   font-family: 'VT323';
   font-size: 18px;
+  overflow: auto;
+  height: 100px;
 }
 
