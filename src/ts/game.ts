@@ -15,7 +15,7 @@ module Crimbo {
     overworld: Crimbo.Overworld;
 
     constructor() {
-      this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create, update:
+      this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'crimbo-game', { preload: this.preload, create: this.create, update:
         this.update, render: this.render});
       this.state = GameStatus.OverworldView;
       this.overworld = new Crimbo.Overworld();

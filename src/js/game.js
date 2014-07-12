@@ -46,7 +46,7 @@ var Crimbo;
             this.render = function () {
                 _this.overworldView.render();
             };
-            this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', {
+            this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'crimbo-game', {
                 preload: this.preload, create: this.create, update: this.update, render: this.render });
             this.state = 0 /* OverworldView */;
             this.overworld = new Crimbo.Overworld();
