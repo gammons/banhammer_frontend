@@ -33,23 +33,31 @@ module Crimbo {
 
     update = (direction: string) => {
       if ((this.canMove(this.player)) && (!direction)) return;
-
-      if ((direction) && (this.canMove(this.player)) && (this.entityCanMoveTo(this.player, direction)))
-        this.player.move(direction);
-
-      //move monster
+      this.movePlayer(direction);
       this.moveMonsters();
-
-      // apply item effects
-
       this.turns++;
       if (this.noOneCanMove()) this.turns++;
+    }
+
+    movePlayer = (direction) => {
+      if ((direction) && (this.canMove(this.player)) && (this.entityCanMoveTo(this.player, direction))) {
+        if (this.entityWillHitAnotherEntity(this.player, direction)) {
+          //this.player.attack(this.entityToAttack(this.player, direction));
+        } else {
+          this.player.move(direction);
+        }
+      }
     }
 
     moveMonsters = () => {
       _.each(this.monsters, (monster) => {
         if (this.canMove(monster))  {
-          monster.move(monster.calculateMove(this));
+          if (this.entityWillHitAnotherEntity(monster, move)) {
+            //monster.attack(this.entityToAttack(monster, move));
+          } else {
+            var move = monster.calculateMove(this);
+            monster.move(move);
+          }
         }
       });
     }
@@ -65,6 +73,18 @@ module Crimbo {
         return (this.turns % entity.speed() === 0)
       }
 
+    }
+    entityWillHitAnotherEntity = (entity: Crimbo.CrimboEntity , move: string) => {
+      switch(move) { 
+        case "right": this.isThereAnEntityAt(entity.x + 1, entity.y);break;
+        case "left": this.isThereAnEntityAt(entity.x + 1, entity.y);break;
+        case "up": this.isThereAnEntityAt(entity.x + 1, entity.y);break;
+        case "down": this.isThereAnEntityAt(entity.x + 1, entity.y);break;
+      }
+    }
+
+    isThereAnEntityAt = (x: number, y: number)  => {
+      return (this.player.isAt(x,y) || _.any(this.monsters, (monster) => { return monster.isAt(x,y) }));
     }
 
     entityCanMoveTo = (entity: Crimbo.CrimboEntity, direction: string) => {

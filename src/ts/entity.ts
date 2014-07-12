@@ -7,6 +7,9 @@ module Crimbo {
     y: number;
     _speed: number;
     moved: string;
+    hitPoints: number;
+    armorClass: number;
+    strength: number;
 
     move = (direction: string) => {
       switch(direction) {
@@ -20,6 +23,15 @@ module Crimbo {
     }
     speed = () => {
       return this._speed;
+    }
+    isAt = (x: number, y: number) => {
+      return ((this.x == x) && (this.y == y));
+    }
+
+    attack = (entity: Crimbo.CrimboEntity) => {
+
+
+
     }
   }
 }
