@@ -1,17 +1,38 @@
 /// <reference path="constants.ts"/>
+/// <reference path="item.ts"/>
 module Crimbo {
-  export enum EntityState { Awake, Sleeping, Sitting};
+  enum EntityState { Awake, Sleeping, Sitting, Confused, FoodPoisoning, Dead};
+  enum EntityDemeanor { Friendly, Neutral, Hostile, PissedAtEverything }
 
   export class CrimboEntity {
     x: number;
     y: number;
     name: string;
-    _speed: number;
-    moved: string;
+    speed: number;
     hitPoints: number;
     armorClass: number;
-    strength: number;
+    sprite: string;
 
+    // attributes
+    strength: number;
+    dexterity: number;
+    constitution: number;
+    wisdom: number;
+    intelligence: number;
+
+    
+    // armor-related things
+    hat: Crimbo.Item;
+    armor: Crimbo.Item;
+    pants: Crimbo.Item;
+    shoes: Crimbo.Item;
+
+    // item inventory       
+    private inventory: Crimbo.Item[];
+
+    drops: Crimbo.Item[];
+
+    private cash: number;
 
     move = (direction: string) => {
       switch(direction) {
@@ -20,11 +41,9 @@ module Crimbo {
         case "up": this.y = this.y - 1; break;
         case "down": this.y += 1; break;
       }
-      console.log("coords = ", this.x,this.y);
-      this.moved = direction;
     }
-    speed = () => {
-      return this._speed;
+    getSpeed = () => {
+      return this.speed;
     }
     isAt = (x: number, y: number) => {
       return ((this.x == x) && (this.y == y));

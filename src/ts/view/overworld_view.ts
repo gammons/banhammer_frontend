@@ -25,11 +25,16 @@ module Crimbo {
       this.createMonsterViews();
     }
 
+    preload = () => {
+      this.game.load.tilemap('map', 'assets/tilemaps/maps/collision_test.json', null, Phaser.Tilemap.TILED_JSON);
+    }
+
     createMonsterViews = () => {
       _.each(this.overworld.monsters, (monster) => {
         this.entityViews.push(new Crimbo.MonsterView(this.game, monster));
       });
     }
+
 
     create = () => {
       this.map = this.game.add.tilemap('map');

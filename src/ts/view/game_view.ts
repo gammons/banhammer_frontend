@@ -7,36 +7,30 @@
 module Crimbo {
   export enum GameStatus { OverworldView, Combat, Pause };
 
-  export class CrimboGame {
+  export class GameView {
 
     game: Phaser.Game;
     state: GameStatus;
-    overworldView: Crimbo.OverworldView;
-    overworld: Crimbo.Overworld;
+    view: Crimbo.OverworldView;
 
-    constructor() {
+    constructor(mapJson: Object) {
       this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'crimbo-game', { preload: this.preload, create: this.create, update:
         this.update, render: this.render});
-      this.state = GameStatus.OverworldView;
-      this.overworld = new Crimbo.Overworld();
-      this.overworldView = new Crimbo.OverworldView(this.game, this.overworld);
+      this.view = view;
     }
 
     preload = () => {
-      this.game.load.image('mushroom', '/assets/mushroom32x32.png');
-      this.game.load.image('purple_ball', '/assets/purple_ball.png');
-      this.game.load.tilemap('map', 'assets/tilemaps/maps/collision_test.json', null, Phaser.Tilemap.TILED_JSON);
-      this.game.load.image('ground_1x1', 'assets/tilemaps/tiles/ground_1x1.png');
-      this.game.load.image('phaser', 'assets/sprites/phaser-dude.png');
+      this.view.preload();
     }
 
+
     create = () => {
-      this.overworldView.create();
+      this.view.create();
     }
 
     update = () => {
       var inputPressed = this.handleInput()
-      this.overworldView.update(inputPressed);
+      this.view.update(inputPressed);
     }
 
     handleInput = () => {
@@ -47,18 +41,9 @@ module Crimbo {
       if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) return("space");
       return null;
     }
+
     render = () => {
-      this.overworldView.render();
+      this.view.render();
     }
   }
 }
-
-interface Window { 
-  game: any; 
-  sprite: any;
-}
-window.onload = () => {
-
-  window.game = new Crimbo.CrimboGame();
-
-};
