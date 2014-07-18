@@ -1,8 +1,7 @@
-/// <reference path="phaser.d.ts"/>
-/// <reference path="constants.ts"/>
-/// <reference path="player.ts"/>
-/// <reference path="monster.ts"/>
-/// <reference path="gameinterface.ts"/>
+/// <reference path="../defs/phaser.d"/>
+/// <reference path="constants"/>
+/// <reference path="player"/>
+/// <reference path="monster"/>
 module Crimbo {
   export enum OverworldState { Waiting, PlayerMove, MonsterMove};
 
@@ -13,11 +12,13 @@ module Crimbo {
     private _state: Crimbo.OverworldState;
     private _enterCoords: Phaser.Point;
     private _exitCoords: Phaser.Point;
+    private _turns: number;
 
-    constructor() {
+    constructor(turns: number) {
       this._monsters = [];
       this._monsters.push(new Crimbo.Monster());
       this._player = new Crimbo.Player();
+      this._turns = turns;
     }
 
     setMap = (map: Phaser.Tile[][]) => {
@@ -29,26 +30,25 @@ module Crimbo {
     }
 
     update = (currentTurn: number, direction: string) => {
-      if ((this.canMove(this._player, currentTurn)) && (!direction)) return;
+      if ((this.canMove(this._player)) && (!direction)) return;
       this.movePlayer(direction, currentTurn);
       this.moveMonsters(currentTurn);
       //if (this.noOneCanMove()) this.turns++;
     }
 
-    noOneCanMove = (currentTurn: number) => {
-      return ((!this.canMove(this._player, currentTurn)) && (_.all(this.monsters, (monster) => { return
-        !this.canMove(monster, currentTurn) })))
+    noOneCanMove = () => {
+      return ((!this.canMove(this._player)) && _.all(this._monsters, (monster) => { return !this.canMove(monster) }));
     }
 
     private movePlayer = (direction: string, currentTurn: number) => {
-      if ((direction) && (this.canMove(this._player, currentTurn)) && (this.entityCanMoveTo(this._player, direction))) {
+      if ((direction) && (this.canMove(this._player)) && (this.entityCanMoveTo(this._player, direction))) {
         this.moveEntity(this._player, direction);
       }
     }
 
     private moveMonsters = (turn: number) => {
       _.each(this._monsters, (monster) => {
-        if (this.canMove(monster, turn))  {
+        if (this.canMove(monster))  {
           var move = monster.calculateMove(this);
           this.moveEntity(monster, move);
         }
@@ -64,11 +64,11 @@ module Crimbo {
       }
     }
 
-    private canMove = (entity: Crimbo.CrimboEntity, turn: number) => {
-      if (turn < entity.getSpeed()) {
-        return (entity.getSpeed() % turn === 0)
+    private canMove = (entity: Crimbo.CrimboEntity) => {
+      if (this._turns < entity.getSpeed()) {
+        return (entity.getSpeed() % this._turns === 0)
       } else {
-        return (turn % entity.getSpeed() === 0)
+        return (this._turns % entity.getSpeed() === 0)
       }
 
     }

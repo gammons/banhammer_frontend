@@ -1,5 +1,5 @@
 module Crimbo {
-  class Utils {
+  export class Utils {
     randInt = (max: number) => {
       return Math.floor(Math.random() * (max));
     }

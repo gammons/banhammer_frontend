@@ -9,7 +9,7 @@ module Crimbo {
     newGame = () => {
       this.turns = 1;
       this.player = new Crimbo.Player();
-      this.game = new Crimbo.Game($.getJSON('level1.json'));
+      this.game = new Crimbo.Game($.getJSON('level1.json'), this.turns);
     }
 
     loadGame = () => {

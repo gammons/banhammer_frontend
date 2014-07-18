@@ -1,9 +1,11 @@
-/// <reference path="underscore.d.ts"/>
-/// <reference path="message_window.ts"/>
-/// <reference path="utils.ts"/>
-/// <reference path="phaser.d.ts"/>
+/// <reference path="../defs/underscore.d"/>
+/// <reference path="../defs/phaser.d"/>
+/// <reference path="message_window"/>
+/// <reference path="utils"/>
+
+
 module Crimbo {
-  export var TileSize: number = 32
+  export var TileSize: number = 32;
   export var Message: Crimbo.MessageWindow = new Crimbo.MessageWindow();
-  export var Utils: Crimbo.Utils = new Crimbo.Utils();
+  export var Utility: Crimbo.Utils = new Crimbo.Utils();
 }

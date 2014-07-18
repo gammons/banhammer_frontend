@@ -7,7 +7,7 @@ module Crimbo {
 
     constructor() {
       super();
-      this._speed = 20;
+      this.speed = 20;
       this.name = "the wraith";
       this.x = 10;
       this.y = 3;

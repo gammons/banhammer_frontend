@@ -10,13 +10,15 @@
    There should be a parent class that controls setting up the game, and then the game view.
 */
 module Crimbo {
-  class Game {
+  export class Game {
     private _overworld: Crimbo.Overworld;
     private _items: Crimbo.Item[];
     private _turns: number;
+    private _gameData: Object;
 
-    constructor(gameData: Object) {
-      this._items = [];
+    constructor(gameData: Object, turns: number) {
+      this._gameData = gameData;
+      this._turns = turns;
     }
 
     run = () => {
@@ -28,10 +30,7 @@ module Crimbo {
 
 
     initializeMap = () => {
-      this._overworld = new Crimbo.Overworld();
-
-
-
+      this._overworld = new Crimbo.Overworld(this._turns);
     }
 
     initializeItems = () =>  {
