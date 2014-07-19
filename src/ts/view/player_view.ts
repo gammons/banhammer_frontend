@@ -1,6 +1,6 @@
-/// <reference path="phaser.d.ts"/>
+/// <reference path="../defs/phaser.d"/>
 /// <reference path="entity_view.ts"/>
-/// <reference path="constants.ts"/>
+/// <reference path="../framework/constants.ts"/>
 module Crimbo {
   export class PlayerView extends EntityView {
 

@@ -1,27 +1,24 @@
-/// <reference path="constants.ts"/>
-/// <reference path="overworld.ts"/>
-/// <reference path="player_view.ts"/>
-/// <reference path="monster_view.ts"/>
-/// <reference path="gameinterface.ts"/>
+/// <reference path="../framework/constants"/>
+/// <reference path="../framework/overworld"/>
+/// <reference path="player_view"/>
+/// <reference path="monster_view"/>
 module Crimbo {
 
   export class OverworldView {
 
-
     game: Phaser.Game;
+    player: Crimbo.Player;
     map: Phaser.Tilemap;
     layer: Phaser.TilemapLayer;
     entityViews: Crimbo.EntityView[];
-    overworld: Crimbo.Overworld;
 
     pressedKey: number;
 
 
-    constructor(game: Phaser.Game, overworld: Crimbo.Overworld) {
+    constructor(game: Phaser.Game, player: Crimbo.Player) {
       this.game = game;
-      this.overworld = overworld;
       this.entityViews = [];
-      this.entityViews.push(new Crimbo.PlayerView(this.game, this.overworld.player));
+      this.entityViews.push(new Crimbo.PlayerView(this.game, this.player));
       this.createMonsterViews();
     }
 

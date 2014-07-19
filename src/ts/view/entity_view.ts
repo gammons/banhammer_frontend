@@ -1,6 +1,6 @@
-/// <reference path="phaser.d.ts"/>
-/// <reference path="player.ts"/>
-/// <reference path="constants.ts"/>
+/// <reference path="../defs/phaser.d.ts"/>
+/// <reference path="../framework/player.ts"/>
+/// <reference path="../framework/constants.ts"/>
 module Crimbo {
   export class EntityView {
     static MoveSpeed = 4;

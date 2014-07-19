@@ -1,8 +1,8 @@
-/// <reference path="phaser.d.ts"/>
-/// <reference path="constants.ts"/>
-/// <reference path="gameinterface.ts"/>
+/// <reference path="../defs/phaser.d"/>
+/// <reference path="../framework/constants.ts"/>
 /// <reference path="overworld_view.ts"/>
-/// <reference path="player.ts"/>
+/// <reference path="../framework/game.ts"/>
+/// <reference path="../framework/player.ts"/>
 
 module Crimbo {
   export enum GameStatus { OverworldView, Combat, Pause };
@@ -12,11 +12,11 @@ module Crimbo {
     game: Phaser.Game;
     state: GameStatus;
     view: Crimbo.OverworldView;
+    player: Crimbo.Player;
 
-    constructor(mapJson: Object) {
+    constructor(game: Crimbo.Game, player: Crimbo.Player) {
       this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'crimbo-game', { preload: this.preload, create: this.create, update:
         this.update, render: this.render});
-      this.view = view;
     }
 
     preload = () => {

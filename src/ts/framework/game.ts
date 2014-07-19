@@ -34,7 +34,9 @@ module Crimbo {
     }
 
     initializeItems = () =>  {
-
+      _.each(this._gameData['items'], (i) => {
+        this._overworld.addItem(i);
+      });
     }
 
     initializeEntities = () => {

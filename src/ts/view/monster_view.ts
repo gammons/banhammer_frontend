@@ -1,6 +1,6 @@
-/// <reference path="phaser.d.ts"/>
-/// <reference path="entity_view.ts"/>
-/// <reference path="constants.ts"/>
+/// <reference path="../defs/phaser.d"/>
+/// <reference path="entity_view"/>
+/// <reference path="../framework/constants.ts"/>
 module Crimbo {
   export class MonsterView extends EntityView {
     create = () => {

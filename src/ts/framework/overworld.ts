@@ -1,6 +1,7 @@
 /// <reference path="../defs/phaser.d"/>
 /// <reference path="constants"/>
 /// <reference path="player"/>
+/// <reference path="item"/>
 /// <reference path="monster"/>
 module Crimbo {
   export enum OverworldState { Waiting, PlayerMove, MonsterMove};
@@ -8,6 +9,7 @@ module Crimbo {
   export class Overworld {
     private _monsters: Crimbo.Monster[];
     private _player:  Crimbo.Player;
+    private _items:  Crimbo.Item[];
     private _map: Phaser.Tile[][];
     private _state: Crimbo.OverworldState;
     private _enterCoords: Phaser.Point;
@@ -19,10 +21,15 @@ module Crimbo {
       this._monsters.push(new Crimbo.Monster());
       this._player = new Crimbo.Player();
       this._turns = turns;
+      this._items = [];
     }
 
     setMap = (map: Phaser.Tile[][]) => {
       this._map = map;
+    }
+
+    addItem = (i: Object) => {
+      this._items.push(new Crimbo.Item(i));
     }
 
     private monstersCanMove = () => {
@@ -33,7 +40,6 @@ module Crimbo {
       if ((this.canMove(this._player)) && (!direction)) return;
       this.movePlayer(direction, currentTurn);
       this.moveMonsters(currentTurn);
-      //if (this.noOneCanMove()) this.turns++;
     }
 
     noOneCanMove = () => {
