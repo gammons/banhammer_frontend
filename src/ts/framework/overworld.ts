@@ -10,18 +10,21 @@ module Crimbo {
     private _monsters: Crimbo.Monster[];
     private _player:  Crimbo.Player;
     private _items:  Crimbo.Item[];
-    private _map: Phaser.Tile[][];
+    private _map: Object;
     private _state: Crimbo.OverworldState;
     private _enterCoords: Phaser.Point;
     private _exitCoords: Phaser.Point;
     private _turns: number;
 
-    constructor(turns: number) {
+    constructor(turns: number, map: string) {
       this._monsters = [];
       this._monsters.push(new Crimbo.Monster());
       this._player = new Crimbo.Player();
       this._turns = turns;
       this._items = [];
+      $.getJSON(map, (data) => {
+        this._map = Phaser.TilemapParser.parseTiledJSON(data);
+      });
     }
 
     setMap = (map: Phaser.Tile[][]) => {
@@ -29,30 +32,59 @@ module Crimbo {
     }
 
     addItem = (i: Object) => {
-      this._items.push(new Crimbo.Item(i));
+      var _item = new Crimbo.Item(i);
+      this._items.push(_item);
+      if (_item['placement'] == 'random') {
+        var coords = this.randomPlaceforItem();
+        _item.x = coords.x;
+        _item.y = coords.y;
+
+      } else {
+      }
+    }
+
+    randomPlaceforItem = () => {
+      var good = false;
+      var x, y;
+      while (!good) {
+        y = 2;
+        //y = Utility.randInt(this._map.length)
+        x = Utility.randInt(this._map[0].length)
+        if (!this.hasSolidTile(x,y)) good = true;
+      }
+      var p = new Phaser.Point();
+      p.set(x,y);
+      return p;
+    }
+
+    getMonsters = () => {
+      return this._monsters;
+    }
+
+    placeItemRandomly = (item: Crimbo.Item) => {
     }
 
     private monstersCanMove = () => {
       return _.any(this._monsters, (monster) => { return this.canMove(monster); });
     }
 
-    update = (currentTurn: number, direction: string) => {
+    update = (direction: string) => {
       if ((this.canMove(this._player)) && (!direction)) return;
-      this.movePlayer(direction, currentTurn);
-      this.moveMonsters(currentTurn);
+      this.movePlayer(direction);
+      this.moveMonsters();
     }
 
     noOneCanMove = () => {
       return ((!this.canMove(this._player)) && _.all(this._monsters, (monster) => { return !this.canMove(monster) }));
     }
 
-    private movePlayer = (direction: string, currentTurn: number) => {
+    private movePlayer = (direction: string) => {
       if ((direction) && (this.canMove(this._player)) && (this.entityCanMoveTo(this._player, direction))) {
         this.moveEntity(this._player, direction);
       }
     }
 
-    private moveMonsters = (turn: number) => {
+    private moveMonsters = () => {
       _.each(this._monsters, (monster) => {
         if (this.canMove(monster))  {
           var move = monster.calculateMove(this);

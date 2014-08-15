@@ -15,22 +15,31 @@ module Crimbo {
     private _items: Crimbo.Item[];
     private _turns: number;
     private _gameData: Object;
+    private _player: Crimbo.CrimboEntity;
 
-    constructor(gameData: Object, turns: number) {
+    constructor(gameData: Object, player: Crimbo.CrimboEntity, turns: number) {
       this._gameData = gameData;
       this._turns = turns;
-    }
-
-    run = () => {
+      this._player = player;
       this.initializeMap();
       this.initializeItems();
       this.initializeEntities();
+    }
+
+    run = () => {
       //this.initializeGame();
     }
 
-
     initializeMap = () => {
-      this._overworld = new Crimbo.Overworld(this._turns);
+      this._overworld = new Crimbo.Overworld(this._turns, this._gameData['map']);
+    }
+
+    getOverworld = () => {
+      return this._overworld;
+    }
+
+    getGameData = () => {
+      return this._gameData;
     }
 
     initializeItems = () =>  {
@@ -40,6 +49,11 @@ module Crimbo {
     }
 
     initializeEntities = () => {
+      this._player.setPosition(this._gameData['playerStart']['x'], this._gameData['playerStart']['y']);
+
+      _.each(this._gameData['entities'], (i) => {
+        //this._overworld.addEntity(i);
+      });
     }
   }
 }

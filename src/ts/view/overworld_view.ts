@@ -1,11 +1,13 @@
 /// <reference path="../framework/constants"/>
 /// <reference path="../framework/overworld"/>
+/// <reference path="../framework/game"/>
 /// <reference path="player_view"/>
 /// <reference path="monster_view"/>
 module Crimbo {
 
   export class OverworldView {
 
+    gameModel: Crimbo.Game;
     game: Phaser.Game;
     player: Crimbo.Player;
     map: Phaser.Tilemap;
@@ -15,19 +17,21 @@ module Crimbo {
     pressedKey: number;
 
 
-    constructor(game: Phaser.Game, player: Crimbo.Player) {
+    constructor(game: Phaser.Game, gameModel: Crimbo.Game, player: Crimbo.Player) {
       this.game = game;
+      this.gameModel = gameModel;
       this.entityViews = [];
+      this.player = player;
       this.entityViews.push(new Crimbo.PlayerView(this.game, this.player));
-      this.createMonsterViews();
     }
 
     preload = () => {
-      this.game.load.tilemap('map', 'assets/tilemaps/maps/collision_test.json', null, Phaser.Tilemap.TILED_JSON);
+      this.game.load.tilemap('map', this.gameModel.getGameData()['map'], null, Phaser.Tilemap.TILED_JSON);
     }
 
     createMonsterViews = () => {
-      _.each(this.overworld.monsters, (monster) => {
+      _.each(this.gameModel.getOverworld().getMonsters(), (monster) => {
+        console.log("adding monster",monster);
         this.entityViews.push(new Crimbo.MonsterView(this.game, monster));
       });
     }
@@ -39,13 +43,13 @@ module Crimbo {
       this.layer =  this.map.createLayer('Tile Layer 1');
       this.layer.debug = true;
       this.layer.resizeWorld();
-      this.overworld.setMap(this.map.layers[0]['data']);
+      this.createMonsterViews();
       _.each(this.entityViews, (entityView) => { entityView.create(); });
     }
 
     update = (direction: string) => {
       if (this.animationsFinished())
-        this.overworld.update(direction);
+        this.gameModel.getOverworld().update(direction);
       _.each(this.entityViews, (entityView) => { entityView.update(); });
     }
     animationsFinished = () => {

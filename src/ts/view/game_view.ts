@@ -14,9 +14,10 @@ module Crimbo {
     view: Crimbo.OverworldView;
     player: Crimbo.Player;
 
-    constructor(game: Crimbo.Game, player: Crimbo.Player) {
+    constructor(gameModel: Crimbo.Game, player: Crimbo.Player) {
       this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'crimbo-game', { preload: this.preload, create: this.create, update:
         this.update, render: this.render});
+      this.view = new Crimbo.OverworldView(this.game, gameModel, player);
     }
 
     preload = () => {

@@ -1,0 +1,32 @@
+{
+  "playerStart": {
+    "x": 1,
+    "y": 1
+  },
+  "items": [
+  {
+    "armor": {
+      "placement": "random",
+      "name": "Suprrr armor",
+      "armorClassEffect": -4
+    }
+  }
+  ],
+  "entities": [
+  {
+    "gridBug": {
+    "placement": "random",
+    "name": "grid bug",
+    "sprite": "gridbug",
+    "speed": 5,
+    "hitPoints": 5,
+    "armorClass": 10,
+    "strength": 1,
+    "dexterity": 1,
+    "constitution": 1,
+    "wisdom": 1,
+    "intelligence": 1
+    }
+  }],
+  "map": "assets/map.json" 
+}

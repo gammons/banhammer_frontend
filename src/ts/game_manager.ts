@@ -2,17 +2,23 @@
 /// <reference path="framework/game.ts"/>
 /// <reference path="view/game_view.ts"/>
 module Crimbo {
-  class GameManager {
+  export class GameManager {
     player: Crimbo.Player;
     game: Crimbo.Game;
     gameView: Crimbo.GameView;
     turns: number;
 
+    constructor() {
+    }
     newGame = () => {
       this.turns = 1;
       this.player = new Crimbo.Player();
-      this.game = new Crimbo.Game($.getJSON('level1.json'), this.turns);
-      this.gameView = new Crimbo.GameView(this.game, this.player);
+      var data = $.getJSON('assets/level1.json', (data) => {
+        this.game = new Crimbo.Game(data, this.player, this.turns);
+        console.log("player = ", this.player);
+        this.gameView = new Crimbo.GameView(this.game, this.player);
+        this.game.run();
+      });
     }
 
     loadGame = () => {

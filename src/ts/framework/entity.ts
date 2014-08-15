@@ -34,6 +34,11 @@ module Crimbo {
 
     private cash: number;
 
+    setPosition = (x: number, y: number) => {
+      this.x = x;
+      this.y = y;
+    }
+
     move = (direction: string) => {
       switch(direction) {
         case "left": this.x = this.x - 1; break;

@@ -1,12 +1,13 @@
-/// <reference path="game.ts"/>
-/// <reference path="game_view.ts"/>
+/// <reference path="../game_manager.ts"/>
+/// <reference path="../view/game_view.ts"/>
 interface Window { 
-  gameView: any; 
+  gameManager: any; 
 }
 window.onload = () => {
 
-  var game = new Crimbo.Game();
-  window.gameView = new Crimbo.GameView(game);
+  var game = new Crimbo.GameManager();
+  game.newGame();
+  window.gameManager = game;
 
 };
 

@@ -1,6 +1,7 @@
 /// <reference path="constants.ts"/>
+/// <reference path="entity.ts"/>
 module Crimbo {
-  export class Item {
+  export class Item extends CrimboEntity {
     name: string;
     type: string;
     description: string;      
@@ -23,6 +24,7 @@ module Crimbo {
       this.constitutionEffect = attrs.constitutionEffect;
       this.wisdomEffect = attrs.wisdomEffect;
       this.intelligenceEffect = attrs.intelligenceEffect;
+      super();
     }
   }
 }

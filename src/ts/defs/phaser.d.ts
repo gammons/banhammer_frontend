@@ -4574,7 +4574,7 @@ declare module Phaser {
         static getEmptyData(tileWidth?: number, tileHeight?: number, width?: number, height?: number): Object;
         static parse(game: Phaser.Game, key: string, tileWidth?: number, tileHeight?: number, width?: number, height?: number): Object;
         static parseCSV(key: string, data: string, tileWidth?: number, tileHeight?: number): Object;
-        static parseJSON(json: Object): Object;
+        static parseTiledJSON(json: Object): Object;
 
     }
 
