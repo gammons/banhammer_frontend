@@ -3,6 +3,7 @@
 /// <reference path="../framework/game"/>
 /// <reference path="player_view"/>
 /// <reference path="monster_view"/>
+/// <reference path="item_view"/>
 module Crimbo {
 
   export class OverworldView {
@@ -24,6 +25,7 @@ module Crimbo {
       this.player = player;
       this.entityViews.push(new Crimbo.PlayerView(this.game, player));
       this.createMonsterViews();
+      this.createItemViews();
     }
 
     preload = () => {
@@ -36,6 +38,13 @@ module Crimbo {
       _.each(this.gameModel.getOverworld().getMonsters(), (monster) => {
         console.log("adding monster",monster);
         this.entityViews.push(new Crimbo.MonsterView(this.game, monster));
+      });
+    }
+
+    createItemViews = () => {
+      _.each(this.gameModel.getOverworld().getItems(), (i) => {
+        console.log("adding item",i);
+        this.entityViews.push(new Crimbo.ItemView(this.game, i));
       });
     }
 

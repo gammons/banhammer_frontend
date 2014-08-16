@@ -16,24 +16,23 @@ module Crimbo {
     private _exitCoords: Phaser.Point;
     private _turns: number;
 
-    constructor(player: Crimbo.CrimboEntity, turns: number, map: string) {
+    constructor(player: Crimbo.CrimboEntity, turns: number, map: Object) {
       this._monsters = [];
       this._monsters.push(new Crimbo.Monster());
       this._player = player;
       this._turns = turns;
       this._items = [];
-      $.getJSON(map, (data) => {
-        this._map = Phaser.TilemapParser.parseTiledJSON(data);
-      });
+      this._map = map;
     }
 
     addItem = (i: Object) => {
       var _item = new Crimbo.Item(i);
       this._items.push(_item);
-      if (_item['placement'] == 'random') {
+      if (i['placement'] == 'random') {
         var coords = this.randomPlaceforItem();
         _item.x = coords.x;
         _item.y = coords.y;
+
 
       } else {
       }
@@ -41,6 +40,10 @@ module Crimbo {
 
     getMonsters = () => {
       return this._monsters;
+    }
+
+    getItems = () => {
+      return this._items;
     }
 
     update = (direction: string) => {
@@ -99,11 +102,11 @@ module Crimbo {
     }
 
     private mapLengthY = () => {
-      this._map['layers'][0].data.length;
+      return this._map['layers'][0].data.length;
     }
 
     private mapLengthX = () => {
-      this._map['layers'][0].data[0].length;
+      return this._map['layers'][0].data[0].length;
     }
 
     private isThereAnEntityAt = (x: number, y: number)  => {
@@ -136,9 +139,8 @@ module Crimbo {
 
     private randomPlaceforItem = () => {
       var good = false;
-      var x, y;
+      var x: number, y: number;
       while (!good) {
-        y = 2;
         y = Utility.randInt(this.mapLengthY())
         x = Utility.randInt(this.mapLengthX())
         if (!this.hasSolidTile(x,y)) good = true;

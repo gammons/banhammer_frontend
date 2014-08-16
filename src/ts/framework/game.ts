@@ -31,7 +31,9 @@ module Crimbo {
     }
 
     initializeMap = () => {
-      this._overworld = new Crimbo.Overworld(this._player, this._turns, this._gameData['map']);
+      $.ajax(this._gameData['map'], {async: false, dataType: "json", success: (data) => {
+        this._overworld = new Crimbo.Overworld(this._player, this._turns, Phaser.TilemapParser.parseTiledJSON(data));
+      }});
     }
 
     getOverworld = () => {

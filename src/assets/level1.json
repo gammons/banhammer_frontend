@@ -5,11 +5,10 @@
   },
   "items": [
   {
-    "armor": {
-      "placement": "random",
-      "name": "Suprrr armor",
-      "armorClassEffect": -4
-    }
+    "sprite": "armor",
+    "placement": "random",
+    "name": "Suprrr armor",
+    "armorClassEffect": -4
   }
   ],
   "entities": [
