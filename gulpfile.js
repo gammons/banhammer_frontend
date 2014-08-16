@@ -22,19 +22,34 @@ paths = {
   dist:   './dist/'
 };
 
-var typescript = require('gulp-tsc');
+var ts = require('gulp-type');
 
-gulp.task('compile-ts', function(){
-  gulp.src(paths.ts)
-    .pipe(typescript())
-    .pipe(gulp.dest(paths.dist + 'js'))
+var tsProject = ts.createProject({
+  declarationFiles: false,
+  noExternalResolve: true
 });
 
-gulp.task('compile-ts-dev', function(){
-  gulp.src(paths.ts)
-    .pipe(typescript())
-    .pipe(gulp.dest('./src/js'));
+gulp.task('scripts', function() {
+  var tsResult = gulp.src(paths.ts).pipe(ts(tsProject));
+  //tsResult.dts.pipe(gulp.dest('release/definitions'));
+  return tsResult.js.pipe(gulp.dest('./src/js'));
+
 });
+gulp.task('watch', ['scripts'], function() {
+  gulp.watch('lib/*.ts', ['scripts']);
+});
+
+// gulp.task('compile-ts', function(){
+//   gulp.src(paths.ts)
+//     .pipe(typescript())
+//     .pipe(gulp.dest(paths.dist + 'js'))
+// });
+//
+// gulp.task('compile-ts-dev', function(){
+//   gulp.src(paths.ts)
+//     .pipe(typescript())
+//     .pipe(gulp.dest('./src/js'));
+// });
 
 
 gulp.task('clean', function () {
@@ -107,7 +122,7 @@ gulp.task('connect', function () {
 
 gulp.task('watch', function () {
   gulp.watch(paths.js, ['lint']);
-  gulp.watch(['./src/index.html', paths.css, paths.ts], ['compile-ts-dev', 'html']);
+  gulp.watch(['./src/index.html', paths.css, paths.ts], ['scripts', 'html']);
 });
 
 gulp.task('default', ['connect', 'watch']);
