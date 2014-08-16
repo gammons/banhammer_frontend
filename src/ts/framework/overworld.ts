@@ -144,7 +144,7 @@ module Crimbo {
 
     // I hate this.
     hasSolidTile = (x: number, y: number) => {
-      return (this._map[y][x].index > 0);
+      return (this._map['layers'][0].data[y][x].index > 0);
     }
   }
 }
