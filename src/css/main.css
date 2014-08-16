@@ -2,10 +2,14 @@ body {
   font-family: 'VT323';
 }
 
+#crimbo-game {
+  min-height: 600px;
+}
+
 .messages {
   font-family: 'VT323';
   font-size: 18px;
   overflow: auto;
-  height: 100px;
+  height: 250px;
 }
 
