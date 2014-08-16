@@ -27,10 +27,6 @@ module Crimbo {
       });
     }
 
-    setMap = (map: Phaser.Tile[][]) => {
-      this._map = map;
-    }
-
     addItem = (i: Object) => {
       var _item = new Crimbo.Item(i);
       this._items.push(_item);
@@ -43,29 +39,8 @@ module Crimbo {
       }
     }
 
-    randomPlaceforItem = () => {
-      var good = false;
-      var x, y;
-      while (!good) {
-        y = 2;
-        //y = Utility.randInt(this._map.length)
-        x = Utility.randInt(this._map[0].length)
-        if (!this.hasSolidTile(x,y)) good = true;
-      }
-      var p = new Phaser.Point();
-      p.set(x,y);
-      return p;
-    }
-
     getMonsters = () => {
       return this._monsters;
-    }
-
-    placeItemRandomly = (item: Crimbo.Item) => {
-    }
-
-    private monstersCanMove = () => {
-      return _.any(this._monsters, (monster) => { return this.canMove(monster); });
     }
 
     update = (direction: string) => {
@@ -74,7 +49,11 @@ module Crimbo {
       this.moveMonsters();
     }
 
-    noOneCanMove = () => {
+    private monstersCanMove = () => {
+      return _.any(this._monsters, (monster) => { return this.canMove(monster); });
+    }
+
+    private noOneCanMove = () => {
       return ((!this.canMove(this._player)) && _.all(this._monsters, (monster) => { return !this.canMove(monster) }));
     }
 
@@ -119,13 +98,21 @@ module Crimbo {
       }
     }
 
-    isThereAnEntityAt = (x: number, y: number)  => {
+    private mapLengthY = () => {
+      this._map['layers'][0].data.length;
+    }
+
+    private mapLengthX = () => {
+      this._map['layers'][0].data[0].length;
+    }
+
+    private isThereAnEntityAt = (x: number, y: number)  => {
       if (this._player.isAt(x,y)) return this._player;
       var monster = _.find(this._monsters, (monster) => { return monster.isAt(x,y) });
       return monster;
     }
 
-    entityCanMoveTo = (entity: Crimbo.CrimboEntity, direction: string) => {
+    private entityCanMoveTo = (entity: Crimbo.CrimboEntity, direction: string) => {
       switch(direction) {
         case "right":
           return(!this.hasSolidTile((entity.x + 1), entity.y));
@@ -143,9 +130,24 @@ module Crimbo {
     }
 
     // I hate this.
-    hasSolidTile = (x: number, y: number) => {
+    private hasSolidTile = (x: number, y: number) => {
       return (this._map['layers'][0].data[y][x].index > 0);
     }
+
+    private randomPlaceforItem = () => {
+      var good = false;
+      var x, y;
+      while (!good) {
+        y = 2;
+        y = Utility.randInt(this.mapLengthY())
+        x = Utility.randInt(this.mapLengthX())
+        if (!this.hasSolidTile(x,y)) good = true;
+      }
+      var p = new Phaser.Point();
+      p.set(x,y);
+      return p;
+    }
+
   }
 }
 
