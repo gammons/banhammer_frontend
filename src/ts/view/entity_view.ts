@@ -16,6 +16,7 @@ module Crimbo {
       this.entity = entity;
     }
 
+    preload = () => { }
     create = () => { }
 
     update = () => {

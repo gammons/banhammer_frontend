@@ -5,7 +5,8 @@ module Crimbo {
   export class PlayerView extends EntityView {
 
     preload = () => {
-      this.game.load.image('player', '/assets/mushroom32x32.png');
+      console.log("player preload");
+      this.game.load.image('player', 'assets/mushroom32x32.png');
     }
 
     create = () => {

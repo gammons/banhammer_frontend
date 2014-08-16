@@ -23,11 +23,13 @@ module Crimbo {
       this.entityViews = [];
       this.player = player;
       this.entityViews.push(new Crimbo.PlayerView(this.game, this.player));
+      this.createMonsterViews();
     }
 
     preload = () => {
       this.game.load.tilemap('map', this.gameModel.getGameData()['map'], null, Phaser.Tilemap.TILED_JSON);
       this.game.load.image('ground_1x1', 'assets/tilemaps/tiles/ground_1x1.png');
+      _.each(this.entityViews, (entityView) => { entityView.preload(); });
     }
 
     createMonsterViews = () => {
@@ -44,7 +46,6 @@ module Crimbo {
       this.layer =  this.map.createLayer('Tile Layer 1');
       this.layer.debug = true;
       this.layer.resizeWorld();
-      this.createMonsterViews();
       _.each(this.entityViews, (entityView) => { entityView.create(); });
     }
 
