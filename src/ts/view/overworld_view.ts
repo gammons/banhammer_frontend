@@ -22,7 +22,7 @@ module Crimbo {
       this.gameModel = gameModel;
       this.entityViews = [];
       this.player = player;
-      this.entityViews.push(new Crimbo.PlayerView(this.game, this.player));
+      this.entityViews.push(new Crimbo.PlayerView(this.game, player));
       this.createMonsterViews();
     }
 
@@ -50,9 +50,11 @@ module Crimbo {
     }
 
     update = (direction: string) => {
-      if (this.animationsFinished())
+      if (this.animationsFinished()) {
         this.gameModel.getOverworld().update(direction);
-      _.each(this.entityViews, (entityView) => { entityView.update(); });
+      } else {
+        _.each(this.entityViews, (entityView) => { entityView.update(); });
+      }
     }
     animationsFinished = () => {
       return _.all(this.entityViews, (entityView) => { return (entityView.finishedMoving() === true) });

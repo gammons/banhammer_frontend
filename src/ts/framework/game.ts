@@ -31,7 +31,7 @@ module Crimbo {
     }
 
     initializeMap = () => {
-      this._overworld = new Crimbo.Overworld(this._turns, this._gameData['map']);
+      this._overworld = new Crimbo.Overworld(this._player, this._turns, this._gameData['map']);
     }
 
     getOverworld = () => {

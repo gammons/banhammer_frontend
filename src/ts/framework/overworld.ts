@@ -16,10 +16,10 @@ module Crimbo {
     private _exitCoords: Phaser.Point;
     private _turns: number;
 
-    constructor(turns: number, map: string) {
+    constructor(player: Crimbo.CrimboEntity, turns: number, map: string) {
       this._monsters = [];
       this._monsters.push(new Crimbo.Monster());
-      this._player = new Crimbo.Player();
+      this._player = player;
       this._turns = turns;
       this._items = [];
       $.getJSON(map, (data) => {
