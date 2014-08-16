@@ -27,6 +27,7 @@ module Crimbo {
 
     preload = () => {
       this.game.load.tilemap('map', this.gameModel.getGameData()['map'], null, Phaser.Tilemap.TILED_JSON);
+      this.game.load.image('ground_1x1', 'assets/tilemaps/tiles/ground_1x1.png');
     }
 
     createMonsterViews = () => {
