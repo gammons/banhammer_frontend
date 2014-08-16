@@ -8,12 +8,14 @@ module Crimbo {
     game: Phaser.Game;
     entity: Crimbo.CrimboEntity;
     sprite: Phaser.Sprite;
+    _expired: boolean;
     x: number
     y: number
 
     constructor(game: Phaser.Game, entity: Crimbo.CrimboEntity) {
       this.game = game;
       this.entity = entity;
+      this._expired = false;
     }
 
     preload = () => { }
@@ -45,6 +47,19 @@ module Crimbo {
 
     finishedMoving = () => {
       return ((this.entity.x === this.x) && (this.entity.y == this.y));
+    }
+
+    expire = () => {
+      if (!this.entity.isExpired())
+        return ;
+      console.log("expiring view for ", this);
+      this._expired = true;
+      this.sprite.destroy();
+
+    }
+
+    isExpired = () => {
+      return this._expired == true;
     }
     
   }

@@ -61,12 +61,19 @@ module Crimbo {
     update = (direction: string) => {
       if (this.animationsFinished()) {
         this.gameModel.getOverworld().update(direction);
+        this.expireViews();
       } else {
         _.each(this.entityViews, (entityView) => { entityView.update(); });
       }
     }
+
     animationsFinished = () => {
       return _.all(this.entityViews, (entityView) => { return (entityView.finishedMoving() === true) });
+    }
+
+    expireViews = () => {
+      _.each(this.entityViews, (entityView) => { entityView.expire(); });
+      this.entityViews = _.reject(this.entityViews, (entityView) => { return entityView.isExpired() });
     }
 
     render = () => { }

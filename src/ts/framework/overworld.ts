@@ -9,14 +9,14 @@ module Crimbo {
   export class Overworld {
     private _monsters: Crimbo.Monster[];
     private _player:  Crimbo.Player;
-    private _items:  Crimbo.Item[];
+    private _items:  Crimbo.CrimboItem[];
     private _map: Object;
     private _state: Crimbo.OverworldState;
     private _enterCoords: Phaser.Point;
     private _exitCoords: Phaser.Point;
     private _turns: number;
 
-    constructor(player: Crimbo.CrimboEntity, turns: number, map: Object) {
+    constructor(player: Crimbo.Player, turns: number, map: Object) {
       this._monsters = [];
       this._monsters.push(new Crimbo.Monster());
       this._player = player;
@@ -26,7 +26,7 @@ module Crimbo {
     }
 
     addItem = (i: Object) => {
-      var _item = new Crimbo.Item(i);
+      var _item = new Crimbo.CrimboItem(i);
       this._items.push(_item);
       if (i['placement'] == 'random') {
         var coords = this.randomPlaceforItem();
@@ -50,6 +50,24 @@ module Crimbo {
       if ((this.canMove(this._player)) && (!direction)) return;
       this.movePlayer(direction);
       this.moveMonsters();
+      this.expireItems();
+    }
+
+    entityCanMoveTo = (entity: Crimbo.CrimboEntity, direction: string) => {
+      switch(direction) {
+        case "right":
+          return(!this.hasSolidTile((entity.x + 1), entity.y));
+          break;
+        case "left":
+          return(!this.hasSolidTile((entity.x - 1), entity.y));
+          break;
+        case "up":
+          return(!this.hasSolidTile(entity.x, (entity.y - 1)));
+          break;
+        case "down":
+          return(!this.hasSolidTile(entity.x, (entity.y + 1)));
+          break;
+      }
     }
 
     private monstersCanMove = () => {
@@ -75,10 +93,21 @@ module Crimbo {
       });
     }
 
+    private expireItems = () => {
+       this._items = _.reject(this._items, (it) => { return it.isExpired(); });
+    }
+
     private moveEntity = (entity: Crimbo.CrimboEntity, direction: string) => {
-      var entityToAttack = this.entityWillHitAnotherEntity(entity, direction);
-      if (entityToAttack) {
-        entity.attack(entityToAttack);
+      var otherEntity = this.entityWillHitAnotherEntity(entity, direction);
+      if (otherEntity) {
+        switch(otherEntity.getType()) {
+          case "monster": entity.attack(otherEntity); break;
+          case "item": 
+            entity.move(direction);
+            entity.pickupItem(otherEntity); 
+            otherEntity.expire();
+            break;
+        }
       } else {
         entity.move(direction);
       }
@@ -94,10 +123,10 @@ module Crimbo {
     }
     private entityWillHitAnotherEntity = (entity: Crimbo.CrimboEntity , move: string) => {
       switch(move) { 
-        case "right": return this.isThereAnEntityAt(entity.x + 1, entity.y);break;
-        case "left": return this.isThereAnEntityAt(entity.x - 1, entity.y);break;
-        case "up": return this.isThereAnEntityAt(entity.x, entity.y - 1);break;
-        case "down": return this.isThereAnEntityAt(entity.x, entity.y + 1);break;
+        case "right": return this.entityAt(entity.x + 1, entity.y);break;
+        case "left": return this.entityAt(entity.x - 1, entity.y);break;
+        case "up": return this.entityAt(entity.x, entity.y - 1);break;
+        case "down": return this.entityAt(entity.x, entity.y + 1);break;
       }
     }
 
@@ -109,28 +138,14 @@ module Crimbo {
       return this._map['layers'][0].data[0].length;
     }
 
-    private isThereAnEntityAt = (x: number, y: number)  => {
+    private entityAt = (x: number, y: number)  => {
       if (this._player.isAt(x,y)) return this._player;
       var monster = _.find(this._monsters, (monster) => { return monster.isAt(x,y) });
-      return monster;
+      if (monster) return monster;
+      var i = _.find(this._items, (i) => { return i.isAt(x,y) });
+       return i;
     }
 
-    private entityCanMoveTo = (entity: Crimbo.CrimboEntity, direction: string) => {
-      switch(direction) {
-        case "right":
-          return(!this.hasSolidTile((entity.x + 1), entity.y));
-          break;
-        case "left":
-          return(!this.hasSolidTile((entity.x - 1), entity.y));
-          break;
-        case "up":
-          return(!this.hasSolidTile(entity.x, (entity.y - 1)));
-          break;
-        case "down":
-          return(!this.hasSolidTile(entity.x, (entity.y + 1)));
-          break;
-      }
-    }
 
     // I hate this.
     private hasSolidTile = (x: number, y: number) => {

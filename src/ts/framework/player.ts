@@ -9,6 +9,9 @@ module Crimbo {
       this.x = 1;
       this.y = 1;
     }
+    getType = () => {
+      return "player";
+    }
   }
 }
 
