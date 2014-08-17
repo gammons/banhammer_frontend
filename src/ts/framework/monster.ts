@@ -23,10 +23,6 @@ module Crimbo {
       }
       return direction;
     }
-
-    getType = () => {
-      return "monster";
-    }
   }
 }
 

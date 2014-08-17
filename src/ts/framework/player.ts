@@ -9,8 +9,15 @@ module Crimbo {
       this.x = 1;
       this.y = 1;
     }
-    getType = () => {
-      return "player";
+    actOn = (otherEntity: Crimbo.CrimboEntity) => {
+      switch(otherEntity['constructor']['name']) {
+        case "Monster":
+          this.attack(otherEntity);
+          break;
+        case "CrimboItem":
+          this.pickupItem(otherEntity);
+          otherEntity.expire();
+      }
     }
   }
 }

@@ -105,14 +105,10 @@ module Crimbo {
     private moveEntity = (entity: Crimbo.CrimboEntity, direction: string) => {
       var otherEntity = this.entityWillHitAnotherEntity(entity, direction);
       if (otherEntity) {
-        switch(otherEntity.getType()) {
-          case "monster": entity.attack(otherEntity); break;
-          case "item": 
-            entity.move(direction);
-            entity.pickupItem(otherEntity); 
-            otherEntity.expire();
-            break;
-        }
+        console.log("other entity is ", otherEntity, ", and the type is ", otherEntity.getType());
+        entity.actOn(otherEntity);
+        if (otherEntity.getType() == "CrimboItem")
+          entity.move(direction);
       } else {
         entity.move(direction);
       }

@@ -14,9 +14,6 @@ module Crimbo {
     wisdomEffect: number;
     intelligenceEffect: number;
 
-    getType = () => {
-      return "item"
-    }
 
     constructor(attrs: any) {
       super();
@@ -35,7 +32,6 @@ module Crimbo {
     isItem = () =>  {
       return true;
     }
-
   }
 }
 

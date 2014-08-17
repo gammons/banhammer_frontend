@@ -60,10 +60,6 @@ module Crimbo {
       return ((this.x == x) && (this.y == y));
     }
 
-    // getType = () => {
-    //   return "entity";
-    // }
-
     attack = (entity: Crimbo.CrimboEntity) => {
       var msg = this.name + " attacks " + entity.name + "!"
       Crimbo.Message.notify(msg);
@@ -81,5 +77,11 @@ module Crimbo {
     isExpired = () => {
       return this._expired == true;
     }
+
+    getType = () => {
+      return this['constructor']['name'];
+    }
+
+    actOn = (otherEntity: Crimbo.CrimboEntity) => { }
   }
 }
