@@ -60,17 +60,30 @@ module Crimbo {
 
     entityCanMoveTo = (entity: Crimbo.CrimboEntity, direction: string) => {
       switch(direction) {
-        case "right":
+        case "e":
           return(!this.hasSolidTile((entity.x + 1), entity.y));
           break;
-        case "left":
+        case "w":
           return(!this.hasSolidTile((entity.x - 1), entity.y));
           break;
-        case "up":
+        case "n":
           return(!this.hasSolidTile(entity.x, (entity.y - 1)));
           break;
-        case "down":
+        case "s":
           return(!this.hasSolidTile(entity.x, (entity.y + 1)));
+          break;
+
+        case "ne":
+          return(!this.hasSolidTile((entity.x + 1), (entity.y - 1)));
+          break;
+        case "nw":
+          return(!this.hasSolidTile((entity.x - 1), (entity.y - 1)));
+          break;
+        case "se":
+          return(!this.hasSolidTile((entity.x + 1), (entity.y + 1)));
+          break;
+        case "sw":
+          return(!this.hasSolidTile((entity.x - 1), (entity.y + 1)));
           break;
       }
     }
@@ -124,10 +137,15 @@ module Crimbo {
     }
     private entityWillHitAnotherEntity = (entity: Crimbo.CrimboEntity , move: string) => {
       switch(move) { 
-        case "right": return this.entityAt(entity.x + 1, entity.y);break;
-        case "left": return this.entityAt(entity.x - 1, entity.y);break;
-        case "up": return this.entityAt(entity.x, entity.y - 1);break;
-        case "down": return this.entityAt(entity.x, entity.y + 1);break;
+        case "e": return this.entityAt(entity.x + 1, entity.y);break;
+        case "w": return this.entityAt(entity.x - 1, entity.y);break;
+        case "n": return this.entityAt(entity.x, entity.y - 1);break;
+        case "s": return this.entityAt(entity.x, entity.y + 1);break;
+
+        case "ne": return this.entityAt(entity.x + 1, entity.y - 1);break;
+        case "nw": return this.entityAt(entity.x - 1, entity.y - 1);break;
+        case "se": return this.entityAt(entity.x + 1, entity.y + 1);break;
+        case "sw": return this.entityAt(entity.x - 1, entity.y + 1);break;
       }
     }
 

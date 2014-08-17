@@ -47,10 +47,27 @@ module Crimbo {
 
     move = (direction: string) => {
       switch(direction) {
-        case "left": this.x = this.x - 1; break;
-        case "right": this.x += 1; break;
-        case "up": this.y = this.y - 1; break;
-        case "down": this.y += 1; break;
+        case "w": this.x = this.x - 1; break;
+        case "e": this.x += 1; break;
+        case "n": this.y = this.y - 1; break;
+        case "s": this.y += 1; break;
+
+        case "nw":
+          this.y = this.y - 1;
+          this.x = this.x - 1;
+          break;
+        case "ne":
+          this.y = this.y - 1;
+          this.x = this.x + 1;
+          break;
+        case "se":
+          this.y = this.y + 1;
+          this.x = this.x + 1;
+          break;
+        case "sw":
+          this.y = this.y + 1;
+          this.x = this.x - 1;
+          break;
       }
     }
     getSpeed = () => {

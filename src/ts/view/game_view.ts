@@ -37,10 +37,17 @@ module Crimbo {
     }
 
     handleInput = () => {
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) return("right");
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) return("left");
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) return("up");
-      if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) return("down");
+      if (this.game.input.keyboard.isDown(102)) return("e");
+      if (this.game.input.keyboard.isDown(100)) return("w");
+      if (this.game.input.keyboard.isDown(104)) return("n");
+      if (this.game.input.keyboard.isDown(98)) return("s");
+
+      if (this.game.input.keyboard.isDown(97)) return("sw");
+      if (this.game.input.keyboard.isDown(99)) return("se");
+      if (this.game.input.keyboard.isDown(103)) return("nw");
+      if (this.game.input.keyboard.isDown(105)) return("ne");
+
+      if (this.game.input.keyboard.isDown(101)) return("space");
       if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) return("space");
       return null;
     }
