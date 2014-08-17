@@ -3,7 +3,8 @@
 /// <reference path="overworld.ts"/>
 module Crimbo {
   export class Monster extends Crimbo.CrimboEntity {
-    potentialDirection: string;
+    private potentialDirection: string;
+    private _target: Crimbo.CrimboEntity;
 
     constructor() {
       super();
@@ -11,9 +12,26 @@ module Crimbo {
       this.name = "the wraith";
       this.x = 10;
       this.y = 3;
+      this._target = null;
     }
 
     calculateMove = (overworld: Crimbo.Overworld) => {
+      this.findTarget(overworld);
+      if (this._target) {
+        return this.moveTowardsTarget(overworld);
+      } else {
+        return this.randomWalk(overworld);
+      }
+    }
+
+    private findTarget = (overworld: Crimbo.Overworld) => {
+    }
+
+    private moveTowardsTarget = (overworld: Crimbo.Overworld) => {
+      return 'left';
+    }
+
+    private randomWalk = (overworld: Crimbo.Overworld) => {
       var directions = ['left','right','up','down',null];
       var rnd = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
       var direction = directions[rnd];
@@ -23,6 +41,7 @@ module Crimbo {
       }
       return direction;
     }
+
     actOn = (otherEntity: Crimbo.CrimboEntity) => {
       switch(otherEntity['constructor']['name']) {
         case "Player":
