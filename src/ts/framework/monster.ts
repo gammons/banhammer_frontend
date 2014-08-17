@@ -23,6 +23,19 @@ module Crimbo {
       }
       return direction;
     }
+    actOn = (otherEntity: Crimbo.CrimboEntity) => {
+      switch(otherEntity['constructor']['name']) {
+        case "Player":
+          this.attack(otherEntity);
+          break;
+        case "Monster":
+          Crimbo.Message.notify("The " + this.name + " eyes up the " + otherEntity.name + " suspiciously.");
+          break;
+        case "CrimboItem":
+          this.pickupItem(otherEntity);
+          otherEntity.expire();
+      }
+    }
   }
 }
 
