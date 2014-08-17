@@ -32,11 +32,11 @@ module Crimbo {
     }
 
     private randomWalk = (overworld: Crimbo.Overworld) => {
-      var directions = ['w','e','n','s',null];
-      var rnd = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+      var directions = ['w','e','n','s','ne','nw','se','sw', null];
+      var rnd = Math.floor(Math.random() * (7 - 0 + 1)) + 0;
       var direction = directions[rnd];
       while(!overworld.entityCanMoveTo(this, direction)) {
-        rnd = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
+        rnd = Math.floor(Math.random() * (7 - 0 + 1)) + 0;
         direction = directions[rnd];
       }
       return direction;
