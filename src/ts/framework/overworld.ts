@@ -51,6 +51,11 @@ module Crimbo {
       this.movePlayer(direction);
       this.moveMonsters();
       this.expireItems();
+      this.updateUI();
+    }
+
+    updateUI = () => {
+      $('body').trigger('ui-update');
     }
 
     entityCanMoveTo = (entity: Crimbo.CrimboEntity, direction: string) => {
