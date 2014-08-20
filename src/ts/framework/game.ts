@@ -12,7 +12,7 @@
 module Crimbo {
   export class Game {
     private _overworld: Crimbo.Overworld;
-    private _items: Crimbo.Item[];
+    private _items: Crimbo.CrimboItem[];
     private _turns: number;
     private _gameData: Object;
     private _player: Crimbo.CrimboEntity;

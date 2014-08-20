@@ -42,6 +42,10 @@ module Crimbo {
       return this._monsters;
     }
 
+    brightness = () => {
+      return 5;
+    }
+
     getItems = () => {
       return this._items;
     }
@@ -56,6 +60,18 @@ module Crimbo {
 
     updateUI = () => {
       $('body').trigger('ui-update');
+    }
+
+    hasSolidTile = (x: number, y: number) => {
+      return (this._map['layers'][0].data[y][x].index > 0);
+    }
+
+    entityAt = (x: number, y: number)  => {
+      if (this._player.isAt(x,y)) return this._player;
+      var monster = _.find(this._monsters, (monster) => { return monster.isAt(x,y) });
+      if (monster) return monster;
+      var i = _.find(this._items, (i) => { return i.isAt(x,y) });
+       return i;
     }
 
     entityCanMoveTo = (entity: Crimbo.CrimboEntity, direction: string) => {
@@ -157,19 +173,6 @@ module Crimbo {
       return this._map['layers'][0].data[0].length;
     }
 
-    private entityAt = (x: number, y: number)  => {
-      if (this._player.isAt(x,y)) return this._player;
-      var monster = _.find(this._monsters, (monster) => { return monster.isAt(x,y) });
-      if (monster) return monster;
-      var i = _.find(this._items, (i) => { return i.isAt(x,y) });
-       return i;
-    }
-
-
-    // I hate this.
-    private hasSolidTile = (x: number, y: number) => {
-      return (this._map['layers'][0].data[y][x].index > 0);
-    }
 
     private randomPlaceforItem = () => {
       var good = false;

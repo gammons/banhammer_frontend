@@ -1,5 +1,6 @@
 /// <reference path="../defs/underscore.d"/>
 /// <reference path="../defs/phaser.d"/>
+/// <reference path="../defs/rot.d"/>
 /// <reference path="message_window"/>
 /// <reference path="utils"/>
 

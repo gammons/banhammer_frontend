@@ -16,7 +16,7 @@ module Crimbo {
     }
 
     calculateMove = (overworld: Crimbo.Overworld) => {
-      this.findTarget(overworld);
+      this._target = this.findTarget(overworld);
       if (this._target) {
         return this.moveTowardsTarget(overworld);
       } else {
@@ -25,6 +25,21 @@ module Crimbo {
     }
 
     private findTarget = (overworld: Crimbo.Overworld) => {
+      function lightPasses(x: number, y: number) {
+        if ((x < 0) || (y < 0))
+          return false;
+        return !overworld.hasSolidTile(x,y);
+      }
+      var fov = new ROT.FOV.PreciseShadowcasting(lightPasses, {});
+      fov.compute(this.x, this.y, overworld.brightness(), (x, y, r, visibility) => {
+        var entity = overworld.entityAt(x,y)
+
+        if ((entity) && (entity != this)) {
+          Crimbo.Message.notify(this.name + " sees something: " + entity.name);
+          return entity;
+        }
+      });
+      return null;
     }
 
     private moveTowardsTarget = (overworld: Crimbo.Overworld) => {
