@@ -37,18 +37,46 @@ module Crimbo {
     }
 
     handleInput = () => {
-      if (this.game.input.keyboard.isDown(102)) return("e");
-      if (this.game.input.keyboard.isDown(100)) return("w");
-      if (this.game.input.keyboard.isDown(104)) return("n");
-      if (this.game.input.keyboard.isDown(98)) return("s");
 
+      // right arrow, l key, or #6 on keyboard
+      if (this.game.input.keyboard.isDown(102)) return("e");
+      if (this.game.input.keyboard.isDown(39)) return("e");
+      if (this.game.input.keyboard.isDown(76)) return("e");
+
+      // left arrow, h key, or #4 on keyboard
+      if (this.game.input.keyboard.isDown(100)) return("w");
+      if (this.game.input.keyboard.isDown(37)) return("w");
+      if (this.game.input.keyboard.isDown(72)) return("w");
+
+      // up arrow, K key, or #8 on keyboard
+      if (this.game.input.keyboard.isDown(104)) return("n");
+      if (this.game.input.keyboard.isDown(75)) return("n");
+      if (this.game.input.keyboard.isDown(38)) return("n");
+
+      // down arrow, J key, or #2 on keyboard
+      if (this.game.input.keyboard.isDown(98)) return("s");
+      if (this.game.input.keyboard.isDown(74)) return("s");
+      if (this.game.input.keyboard.isDown(40)) return("s");
+
+      // 3 key on keyboard, or B
       if (this.game.input.keyboard.isDown(97)) return("sw");
+      if (this.game.input.keyboard.isDown(66)) return("sw");
+
+      // 3 key on keyboard, or n
       if (this.game.input.keyboard.isDown(99)) return("se");
+      if (this.game.input.keyboard.isDown(78)) return("se");
+
+      // 3 key on keyboard, or y
       if (this.game.input.keyboard.isDown(103)) return("nw");
+      if (this.game.input.keyboard.isDown(89)) return("nw");
+
+      // 3 key on keyboard, or u
       if (this.game.input.keyboard.isDown(105)) return("ne");
+      if (this.game.input.keyboard.isDown(85)) return("ne");
 
       if (this.game.input.keyboard.isDown(101)) return("space");
       if (this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) return("space");
+      if (this.game.input.keyboard.isDown(190)) return("space");
       return null;
     }
 
