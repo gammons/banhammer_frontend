@@ -13,6 +13,7 @@ module Crimbo {
     hitPoints: number;
     armorClass: number;
     sprite: string;
+    astarMoves: any;
 
     // attributes
     strength: number;

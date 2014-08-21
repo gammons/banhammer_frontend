@@ -4,6 +4,7 @@
 module Crimbo {
   export class Monster extends Crimbo.CrimboEntity {
     private potentialDirection: string;
+    private _destination: any;
     private _target: Crimbo.CrimboEntity;
 
     constructor() {
@@ -12,14 +13,22 @@ module Crimbo {
       this.name = "the wraith";
       this.x = 10;
       this.y = 3;
-      this._target = null;
+      this.astarMoves = [];
     }
 
     calculateMove = (overworld: Crimbo.Overworld) => {
-      this._target = this.findTarget(overworld);
-      if (this._target) {
-        return this.moveTowardsTarget(overworld);
+      this._target = this.findTarget(overworld)
+      if (this._destination) {
+        if (this.isAt(this._destination[0], this._destination[1])) {
+          console.log("we have arrived at our destination");
+          this._destination = null;
+          return this.randomWalk(overworld);
+        } else {
+          console.log("we have a destination and are moving towards it");
+          return this.moveTowardsDestination(overworld);
+        }
       } else {
+        console.log("we do not have a desitnation and are aimlessly walking");
         return this.randomWalk(overworld);
       }
     }
@@ -31,19 +40,45 @@ module Crimbo {
         return !overworld.hasSolidTile(x,y);
       }
       var fov = new ROT.FOV.PreciseShadowcasting(lightPasses, {});
+      var potentialTargets = []
       fov.compute(this.x, this.y, overworld.brightness(), (x, y, r, visibility) => {
         var entity = overworld.entityAt(x,y)
 
         if ((entity) && (entity != this)) {
           Crimbo.Message.notify(this.name + " sees something: " + entity.name);
-          return entity;
+          potentialTargets.push(entity);
         }
       });
-      return null;
+      if (potentialTargets.length > 0)
+        this._destination = [potentialTargets[0].x, potentialTargets[0].y];
+      return potentialTargets[0];
     }
 
-    private moveTowardsTarget = (overworld: Crimbo.Overworld) => {
-      return 'left';
+    private moveTowardsDestination = (overworld: Crimbo.Overworld) => {
+      function passableCallback(x: number, y: number) {
+        return !overworld.hasSolidTile(x,y);
+      }
+      var astar = new ROT.Path.AStar(this.x, this.y, passableCallback, {});
+      this.astarMoves = [];
+      astar.compute(this._destination[0], this._destination[1], (x, y) => {
+        this.astarMoves.push([x,y]);
+      });
+      return this.getNextDirection(this.astarMoves[this.astarMoves.length - 2]);
+    }
+
+    private getNextDirection = (nextPosition) => {
+      var direction = "";
+      if (this.y < nextPosition[1])  {
+        direction = "s";
+      } else if (this.y > nextPosition[1]) {
+        direction = "n";
+      }
+      if (this.x < nextPosition[0]) {
+        direction = direction + "e";
+      } else if (this.x > nextPosition[0]) {
+        direction = direction + "w";
+      }
+      return direction;
     }
 
     private randomWalk = (overworld: Crimbo.Overworld) => {

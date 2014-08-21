@@ -26,7 +26,6 @@ module Crimbo {
       this.constitutionEffect = attrs.constitutionEffect;
       this.wisdomEffect = attrs.wisdomEffect;
       this.intelligenceEffect = attrs.intelligenceEffect;
-      super();
     }
 
     isItem = () =>  {
