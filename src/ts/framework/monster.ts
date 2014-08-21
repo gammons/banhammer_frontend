@@ -49,9 +49,30 @@ module Crimbo {
           potentialTargets.push(entity);
         }
       });
-      if (potentialTargets.length > 0)
-        this._destination = [potentialTargets[0].x, potentialTargets[0].y];
-      return potentialTargets[0];
+      var t = this.pickSuitableTarget(potentialTargets);
+      this.setDestinationFromTargetEntity(t);
+      return t;
+    }
+
+    setDestinationFromTargetEntity = (t) => {
+      if (t)
+        this._destination = [t.x, t.y];
+    }
+
+    pickSuitableTarget = (targets: Crimbo.CrimboEntity[]) => {
+      var tar;
+      // if any of the targets are the player, return that first
+      tar = _.find(targets, (t) => { return t.getType() == "Player" });
+      if (tar) return tar;
+
+      // next up is items
+      tar = _.find(targets, (t) => { return t.getType() == "CrimboItem" });
+      if (tar) return tar;
+      return tar;
+
+      // next up is other monsters
+      tar = _.find(targets, (t) => { return t.getType() == "Monster" });
+      if (tar) return tar;
     }
 
     private moveTowardsDestination = (overworld: Crimbo.Overworld) => {
