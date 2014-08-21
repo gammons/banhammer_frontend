@@ -4,6 +4,10 @@
     "x": 1,
     "y": 1
   },
+  "artwork": [
+    {"armor": {"image": "test.png"}},
+    {"gridBug": {"image": "gridbug.png"}}
+  ],
   "items": [
   {
     "sprite": "armor",
@@ -15,9 +19,11 @@
   "entities": [
   {
     "gridBug": {
+    "count": "5",  
     "placement": "random",
     "name": "grid bug",
     "sprite": "gridbug",
+    "demeanor": "hostile",
     "speed": 5,
     "hitPoints": 5,
     "armorClass": 10,
