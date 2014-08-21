@@ -4,6 +4,8 @@ module Crimbo {
   export class Player extends Crimbo.CrimboEntity {
     constructor() {
       super();
+      this.hitPoints = 10;
+      this.maxHitPoints = 10;
       this.speed = 5;
       this.name = "Playah";
       this.x = 1;

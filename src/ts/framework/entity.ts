@@ -11,6 +11,7 @@ module Crimbo {
     _expired: boolean;
     speed: number;
     hitPoints: number;
+    maxHitPoints: number;
     armorClass: number;
     sprite: string;
     astarMoves: any;
@@ -80,6 +81,7 @@ module Crimbo {
 
     attack = (entity: Crimbo.CrimboEntity) => {
       var msg = this.name + " attacks " + entity.name + "!"
+      entity.hitPoints -= 2;
       Crimbo.Message.notify(msg);
     }
 
