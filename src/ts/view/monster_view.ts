@@ -12,8 +12,8 @@ module Crimbo {
       this.sprite =  this.game.add.sprite(this.entity.x * Crimbo.TileSize, this.entity.y * Crimbo.TileSize, 'mushroom');
     }
 
-    update = () => {
-      if (!this.finishedMoving()) this.move();
+    update()  {
+      super.update();
       if ((this.entity.astarMoves) && (this.entity.astarMoves.length > 0)) {
 
         _.each(this.entity.astarMoves, (m) => {

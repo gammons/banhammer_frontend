@@ -21,7 +21,7 @@ module Crimbo {
     preload = () => { }
     create = () => { }
 
-    update = () => {
+    update() {
       if (!this.finishedMoving()) this.move();
     }
 

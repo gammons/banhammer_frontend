@@ -37,6 +37,8 @@ module Crimbo {
 
     private cash: number;
 
+    moveDirection: string;
+
     constructor() {
       this._expired = false;
       this.inventory = [];
@@ -48,6 +50,7 @@ module Crimbo {
     }
 
     move = (direction: string) => {
+      this.moveDirection = direction;
       switch(direction) {
         case "w": this.x = this.x - 1; break;
         case "e": this.x += 1; break;
