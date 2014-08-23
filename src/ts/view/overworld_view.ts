@@ -14,8 +14,8 @@ module Crimbo {
     map: Phaser.Tilemap;
     layer: Phaser.TilemapLayer;
     entityViews: Crimbo.EntityView[];
-    fogTiles:  Phaser.BitmapData[][];
-
+    fogTiles:  number[][];
+    private _bmd:  Phaser.BitmapData;
     pressedKey: number;
 
 
@@ -35,22 +35,20 @@ module Crimbo {
       this.game.load.image('ground_1x1', 'assets/tilemaps/tiles/ground_1x1.png');
       _.each(this.entityViews, (entityView) => { entityView.preload(); });
 
+
     }
 
     createMonsterViews = () => {
       _.each(this.gameModel.getOverworld().getMonsters(), (monster) => {
-        console.log("adding monster",monster);
         this.entityViews.push(new Crimbo.MonsterView(this.game, monster));
       });
     }
 
     createItemViews = () => {
       _.each(this.gameModel.getOverworld().getItems(), (i) => {
-        console.log("adding item",i);
         this.entityViews.push(new Crimbo.ItemView(this.game, i));
       });
     }
-
 
     create = () => {
       this.map = this.game.add.tilemap('map');
@@ -59,7 +57,9 @@ module Crimbo {
       this.layer.debug = true;
       this.layer.resizeWorld();
       _.each(this.entityViews, (entityView) => { entityView.create(); });
-
+      var bmd = this.game.make.bitmapData(800, 600);
+      this._bmd = this.game.make.bitmapData(800,600);
+      this.game.add.sprite(0,0,this._bmd);
       this.createFogTiles();
     }
 
@@ -67,16 +67,23 @@ module Crimbo {
       _.times(this.gameModel.getOverworld().mapLengthY(), (y) => {
         this.fogTiles[y] = [];
         _.times(this.gameModel.getOverworld().mapLengthX(), (x) => {
-          var fogTile = this.game.make.bitmapData(Crimbo.TileSize, Crimbo.TileSize);
-          fogTile.fill(0,0,0);
-          this.fogTiles[y].push(fogTile);
-          this.game.add.sprite(Crimbo.TileSize * x, Crimbo.TileSize * y, fogTile);
+          this._bmd.context.fillStyle = 'rgba(0, 0, 0, 1.0)';
+          this._bmd.context.fillRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
         });
       });
     }
 
+    randColor() {
+      var colors = [];
+      colors.push(Utility.randInt(100).toString());
+      colors.push(Utility.randInt(100).toString());
+      colors.push(Utility.randInt(100).toString());
+      return "rgba("+colors.join(",")+", 0.5)"
+    }
+
     update() {
       _.each(this.entityViews, (entityView) => { entityView.update(); });
+      this._bmd.dirty = true;
     }
 
     updateFogOfWar() {
@@ -91,14 +98,11 @@ module Crimbo {
         }
       }
 
-
       var fov = new ROT.FOV.PreciseShadowcasting(lightPasses, {});
       var clearTiles = [];
       fov.compute(this.player.x, this.player.y, 5, (x, y, r, visibility) => {
         if ((x >= 0) && (y >= 0) && (x < lengthX) && (y < lengthY)) {
-          //this.fogTiles[y][x].fill(10 * r, 10 * r, 10 * r, 0.2);
-          this.fogTiles[y][x].clear();
-          clearTiles.push(this.fogTiles[y][x]);
+          clearTiles.push("x"+x+"y"+y);
         }
           
       });
@@ -106,8 +110,12 @@ module Crimbo {
       // fill in all the other rectangles that should not be clear
       _.times(this.gameModel.getOverworld().mapLengthY(), (y) => {
         _.times(this.gameModel.getOverworld().mapLengthX(), (x) => {
-          if (!_.contains(clearTiles, this.fogTiles[y][x])) {
-            this.fogTiles[y][x].fill(0,100,0);
+          if (!_.contains(clearTiles, "x"+x+"y"+y)) {
+            this._bmd.context.fillStyle = 'rgba(0, 0, 0, 1.0)';
+            this._bmd.context.fillRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
+          } else {
+            this._bmd.context.clearRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
+
           }
         });
       });
