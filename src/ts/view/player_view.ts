@@ -4,6 +4,7 @@
 module Crimbo {
   export class PlayerView extends EntityView {
     private _walking: boolean;
+    private _walkDirection: string;
 
     preload = () => {
       console.log("player preload");
@@ -21,21 +22,23 @@ module Crimbo {
       this.sprite.animations.add('walk_se', [4,5]); //down
       this.sprite.animations.add('walk_sw', [4,5]); //down
       this.sprite.animations.add('walk_w', [6,7]); //left
+      this._walking = false;
     }
 
     update() {
       super.update();
-      if (!this.finishedMoving()) {
-        if (!this._walking) {
-          console.log("starting walking", this.entity.moveDirection);
-          this.sprite.animations.play("walk_"+this.entity.moveDirection,10,true);
-          this._walking = true;
-        }
-      } else {
-        console.log("stoping walking");
-        this.sprite.animations.stop("walk_"+this.entity.moveDirection);
-        this._walking = false;
-      }
+      this._walking = true;
+    }
+
+    movementStart() {
+      console.log("start player movement");
+      this._walking = true;
+      this.sprite.animations.play("walk_"+this.entity.moveDirection,10,true);
+    }
+
+    turnComplete() {
+      this.sprite.animations.stop("walk_"+this.entity.moveDirection);
+      this._walking = false;
     }
   }
 }

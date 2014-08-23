@@ -13,6 +13,9 @@ module Crimbo {
     state: GameStatus;
     view: Crimbo.OverworldView;
     player: Crimbo.Player;
+    private _timer: Phaser.Timer;
+    private _turnComplete: boolean;
+    private _gameModel: Crimbo.Game;
 
     constructor(gameModel: Crimbo.Game, player: Crimbo.Player) {
       var w = $('#crimbo-game').width();
@@ -20,6 +23,8 @@ module Crimbo {
       this.game = new Phaser.Game(w, h, Phaser.AUTO, 'crimbo-game', { preload: this.preload, create: this.create, update:
         this.update, render: this.render});
       this.view = new Crimbo.OverworldView(this.game, gameModel, player);
+      this._gameModel = gameModel;
+      this._turnComplete = true;
     }
 
     preload = () => {
@@ -29,11 +34,27 @@ module Crimbo {
 
     create = () => {
       this.view.create();
+      this._timer = this.game.time.create(false);
     }
 
     update = () => {
-      var inputPressed = this.handleInput()
-      this.view.update(inputPressed);
+      if (this._turnComplete) {
+        var inputPressed = this.handleInput();
+        if (inputPressed) {
+          this._gameModel.getOverworld().update(inputPressed);
+          this.startTimer();
+        }
+      }
+      this.view.update();
+    }
+
+    startTimer() {
+      this._turnComplete = false;
+      this._timer.add(200, () => {
+        this._turnComplete = true;
+        this.view.turnComplete();
+      }, this);
+      this._timer.start();
     }
 
     handleInput = () => {

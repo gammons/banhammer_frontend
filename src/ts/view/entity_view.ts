@@ -22,40 +22,34 @@ module Crimbo {
     create = () => { }
 
     update() {
-      if (!this.finishedMoving()) this.move();
+      this.move();
     }
+
+    turnComplete() { }
 
     move = () => {
       // move x
-      if (this.x < this.entity.x) {
-        this.sprite.x += EntityView.MoveSpeed;
-      } else if (this.x > this.entity.x) {
-        this.sprite.x -= EntityView.MoveSpeed;
+      if ((this.x != this.entity.x) || (this.y != this.entity.y)) {
+        this.movementStart();
+        this.game.add.tween(this.sprite).to(
+            {x: this.entity.x * Crimbo.TileSize, y: this.entity.y * Crimbo.TileSize},
+            200,
+            Phaser.Easing.Quadratic.Out,
+            true);
+        this.x = this.entity.x;
+        this.y = this.entity.y;
       }
-      if (this.sprite.x % Crimbo.TileSize === 0) this.x = this.entity.x;
-
-      // move y
-      if (this.y < this.entity.y) {
-        this.sprite.y += EntityView.MoveSpeed;
-      } else if (this.y > this.entity.y) {
-        this.sprite.y -= EntityView.MoveSpeed;
-      }
-      if (this.sprite.y % Crimbo.TileSize === 0) this.y = this.entity.y;
     }
+
+    movementStart() { }
 
     render = () => { }
-
-    finishedMoving = () => {
-      return ((this.entity.x === this.x) && (this.entity.y == this.y));
-    }
 
     expire = () => {
       if (!this.entity.isExpired())
         return ;
-      console.log("expiring view for ", this);
       this._expired = true;
       this.sprite.destroy();
-
     }
 
     isExpired = () => {
