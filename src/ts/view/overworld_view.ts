@@ -5,6 +5,7 @@
 /// <reference path="monster_view"/>
 /// <reference path="item_view"/>
 module Crimbo {
+  export var DrawDistance = 10;
 
   export class OverworldView {
 
@@ -14,7 +15,6 @@ module Crimbo {
     map: Phaser.Tilemap;
     layer: Phaser.TilemapLayer;
     entityViews: Crimbo.EntityView[];
-    fogTiles:  number[][];
     private _bmd:  Phaser.BitmapData;
     pressedKey: number;
 
@@ -27,15 +27,12 @@ module Crimbo {
       this.entityViews.push(new Crimbo.PlayerView(this.game, player));
       this.createMonsterViews();
       this.createItemViews();
-      this.fogTiles = [];
     }
 
     preload = () => {
       this.game.load.tilemap('map', this.gameModel.getGameData()['map'], null, Phaser.Tilemap.TILED_JSON);
       this.game.load.image('ground_1x1', 'assets/tilemaps/tiles/ground_1x1.png');
       _.each(this.entityViews, (entityView) => { entityView.preload(); });
-
-
     }
 
     createMonsterViews = () => {
@@ -57,15 +54,14 @@ module Crimbo {
       this.layer.debug = true;
       this.layer.resizeWorld();
       _.each(this.entityViews, (entityView) => { entityView.create(); });
-      var bmd = this.game.make.bitmapData(800, 600);
-      this._bmd = this.game.make.bitmapData(800,600);
+      this._bmd = this.game.make.bitmapData(Crimbo.TileSize * this.gameModel.getOverworld().mapLengthX(),
+          Crimbo.TileSize * this.gameModel.getOverworld().mapLengthY());
       this.game.add.sprite(0,0,this._bmd);
       this.createFogTiles();
     }
 
     createFogTiles() {
       _.times(this.gameModel.getOverworld().mapLengthY(), (y) => {
-        this.fogTiles[y] = [];
         _.times(this.gameModel.getOverworld().mapLengthX(), (x) => {
           this._bmd.context.fillStyle = 'rgba(0, 0, 0, 1.0)';
           this._bmd.context.fillRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
@@ -98,11 +94,12 @@ module Crimbo {
         }
       }
 
+      // compute the tiles that we should have clear
       var fov = new ROT.FOV.PreciseShadowcasting(lightPasses, {});
       var clearTiles = [];
-      fov.compute(this.player.x, this.player.y, 5, (x, y, r, visibility) => {
+      fov.compute(this.player.x, this.player.y, DrawDistance, (x, y, r, visibility) => {
         if ((x >= 0) && (y >= 0) && (x < lengthX) && (y < lengthY)) {
-          clearTiles.push("x"+x+"y"+y);
+          clearTiles.push({x: x, y: y, r: r});
         }
           
       });
@@ -110,11 +107,17 @@ module Crimbo {
       // fill in all the other rectangles that should not be clear
       _.times(this.gameModel.getOverworld().mapLengthY(), (y) => {
         _.times(this.gameModel.getOverworld().mapLengthX(), (x) => {
-          if (!_.contains(clearTiles, "x"+x+"y"+y)) {
+
+          var clear = _.find(clearTiles, (tile) => { return (tile.x == x) && (tile.y == y) });
+          if (!clear) {
             this._bmd.context.fillStyle = 'rgba(0, 0, 0, 1.0)';
             this._bmd.context.fillRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
           } else {
+            // clear out the rectangle
+            var alpha = ((clear.r + 2) * 2) / (DrawDistance * 2);
+            this._bmd.context.fillStyle = "rgba(0, 0, 0," + alpha + ")";
             this._bmd.context.clearRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
+            this._bmd.context.fillRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
 
           }
         });

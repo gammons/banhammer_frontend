@@ -35,6 +35,7 @@ module Crimbo {
     create = () => {
       this.view.create();
       this._timer = this.game.time.create(false);
+      this.game.stage.backgroundColor = "#999999"; 
     }
 
     update = () => {
