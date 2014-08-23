@@ -14,6 +14,7 @@ module Crimbo {
     map: Phaser.Tilemap;
     layer: Phaser.TilemapLayer;
     entityViews: Crimbo.EntityView[];
+    fogTiles:  Phaser.BitmapData[][];
 
     pressedKey: number;
 
@@ -26,12 +27,14 @@ module Crimbo {
       this.entityViews.push(new Crimbo.PlayerView(this.game, player));
       this.createMonsterViews();
       this.createItemViews();
+      this.fogTiles = [];
     }
 
     preload = () => {
       this.game.load.tilemap('map', this.gameModel.getGameData()['map'], null, Phaser.Tilemap.TILED_JSON);
       this.game.load.image('ground_1x1', 'assets/tilemaps/tiles/ground_1x1.png');
       _.each(this.entityViews, (entityView) => { entityView.preload(); });
+
     }
 
     createMonsterViews = () => {
@@ -56,15 +59,64 @@ module Crimbo {
       this.layer.debug = true;
       this.layer.resizeWorld();
       _.each(this.entityViews, (entityView) => { entityView.create(); });
+
+      this.createFogTiles();
+    }
+
+    createFogTiles() {
+      _.times(this.gameModel.getOverworld().mapLengthY(), (y) => {
+        this.fogTiles[y] = [];
+        _.times(this.gameModel.getOverworld().mapLengthX(), (x) => {
+          var fogTile = this.game.make.bitmapData(Crimbo.TileSize, Crimbo.TileSize);
+          fogTile.fill(0,0,0);
+          this.fogTiles[y].push(fogTile);
+          this.game.add.sprite(Crimbo.TileSize * x, Crimbo.TileSize * y, fogTile);
+        });
+      });
     }
 
     update() {
       _.each(this.entityViews, (entityView) => { entityView.update(); });
     }
 
+    updateFogOfWar() {
+      var lengthX = this.gameModel.getOverworld().mapLengthX();
+      var lengthY = this.gameModel.getOverworld().mapLengthY();
+
+      var lightPasses = (x: number, y: number)  => {
+        if ((x >= 0) && (y >= 0) && (x < lengthX) && (y < lengthY)) {
+          return !this.gameModel.getOverworld().hasSolidTile(x,y);
+        } else {
+          return false;
+        }
+      }
+
+
+      var fov = new ROT.FOV.PreciseShadowcasting(lightPasses, {});
+      var clearTiles = [];
+      fov.compute(this.player.x, this.player.y, 5, (x, y, r, visibility) => {
+        if ((x >= 0) && (y >= 0) && (x < lengthX) && (y < lengthY)) {
+          //this.fogTiles[y][x].fill(10 * r, 10 * r, 10 * r, 0.2);
+          this.fogTiles[y][x].clear();
+          clearTiles.push(this.fogTiles[y][x]);
+        }
+          
+      });
+
+      // fill in all the other rectangles that should not be clear
+      _.times(this.gameModel.getOverworld().mapLengthY(), (y) => {
+        _.times(this.gameModel.getOverworld().mapLengthX(), (x) => {
+          if (!_.contains(clearTiles, this.fogTiles[y][x])) {
+            this.fogTiles[y][x].fill(0,100,0);
+          }
+        });
+      });
+    }
+
     turnComplete() {
       _.each(this.entityViews, (entityView) => { entityView.turnComplete(); });
       this.expireViews();
+      this.updateFogOfWar();
     }
 
     expireViews = () => {

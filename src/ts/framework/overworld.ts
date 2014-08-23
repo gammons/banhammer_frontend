@@ -104,6 +104,14 @@ module Crimbo {
       }
     }
 
+    mapLengthY() {
+      return this._map['layers'][0].data.length;
+    }
+
+    mapLengthX() {
+      return this._map['layers'][0].data[0].length;
+    }
+
     private monstersCanMove = () => {
       return _.any(this._monsters, (monster) => { return this.canMove(monster); });
     }
@@ -165,13 +173,6 @@ module Crimbo {
       }
     }
 
-    private mapLengthY = () => {
-      return this._map['layers'][0].data.length;
-    }
-
-    private mapLengthX = () => {
-      return this._map['layers'][0].data[0].length;
-    }
 
 
     private randomPlaceforItem = () => {
