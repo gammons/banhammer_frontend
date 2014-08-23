@@ -5,7 +5,7 @@
 /// <reference path="monster_view"/>
 /// <reference path="item_view"/>
 module Crimbo {
-  export var DrawDistance = 10;
+  export var LightRadius = 200;
 
   export class OverworldView {
 
@@ -15,7 +15,8 @@ module Crimbo {
     map: Phaser.Tilemap;
     layer: Phaser.TilemapLayer;
     entityViews: Crimbo.EntityView[];
-    private _bmd:  Phaser.BitmapData;
+    private _shadowTexture:  Phaser.BitmapData;
+    private _lightSprite:  Phaser.Sprite;
     pressedKey: number;
 
 
@@ -54,17 +55,18 @@ module Crimbo {
       this.layer.debug = true;
       this.layer.resizeWorld();
       _.each(this.entityViews, (entityView) => { entityView.create(); });
-      this._bmd = this.game.make.bitmapData(Crimbo.TileSize * this.gameModel.getOverworld().mapLengthX(),
+      this._shadowTexture = this.game.add.bitmapData(Crimbo.TileSize * this.gameModel.getOverworld().mapLengthX(),
           Crimbo.TileSize * this.gameModel.getOverworld().mapLengthY());
-      this.game.add.sprite(0,0,this._bmd);
-      this.createFogTiles();
+      this._lightSprite = this.game.add.sprite(0,0,this._shadowTexture);
+      this._lightSprite.blendMode = Phaser['blendModes'].MULTIPLY;
+      //this.createFogTiles();
     }
 
     createFogTiles() {
       _.times(this.gameModel.getOverworld().mapLengthY(), (y) => {
         _.times(this.gameModel.getOverworld().mapLengthX(), (x) => {
-          this._bmd.context.fillStyle = 'rgba(0, 0, 0, 1.0)';
-          this._bmd.context.fillRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
+          // this._bmd.context.fillStyle = 'rgba(0, 0, 0, 1.0)';
+          // this._bmd.context.fillRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
         });
       });
     }
@@ -79,7 +81,29 @@ module Crimbo {
 
     update() {
       _.each(this.entityViews, (entityView) => { entityView.update(); });
-      this._bmd.dirty = true;
+      this.updateShadowTexture();
+    }
+
+
+    updateShadowTexture() {
+      this._shadowTexture.context.fillStyle = 'rgb(0, 0, 0)';
+      this._shadowTexture.context.fillRect(0, 0, this.game.width, this.game.height);
+      var gradient = this._shadowTexture.context.createRadialGradient(
+        this.player.x * Crimbo.TileSize,
+        this.player.y * Crimbo.TileSize,
+        LightRadius * 0.25,
+        this.player.x * Crimbo.TileSize,
+        this.player.y * Crimbo.TileSize,
+        LightRadius);
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 1.0)');
+      gradient.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+      this._shadowTexture.context.beginPath();
+      this._shadowTexture.context.fillStyle = gradient;
+      this._shadowTexture.context.arc(this.player.x * Crimbo.TileSize,
+          this.player.y * Crimbo.TileSize,
+          LightRadius, 0, Math.PI*2);
+      this._shadowTexture.context.fill();
+      this._shadowTexture.dirty = true;
     }
 
     updateFogOfWar() {
@@ -97,12 +121,12 @@ module Crimbo {
       // compute the tiles that we should have clear
       var fov = new ROT.FOV.PreciseShadowcasting(lightPasses, {});
       var clearTiles = [];
-      fov.compute(this.player.x, this.player.y, DrawDistance, (x, y, r, visibility) => {
-        if ((x >= 0) && (y >= 0) && (x < lengthX) && (y < lengthY)) {
-          clearTiles.push({x: x, y: y, r: r});
-        }
+      // fov.compute(this.player.x, this.player.y, DrawDistance, (x, y, r, visibility) => {
+      //   if ((x >= 0) && (y >= 0) && (x < lengthX) && (y < lengthY)) {
+      //     clearTiles.push({x: x, y: y, r: r});
+      //   }
           
-      });
+      //});
 
       // fill in all the other rectangles that should not be clear
       _.times(this.gameModel.getOverworld().mapLengthY(), (y) => {
@@ -110,14 +134,14 @@ module Crimbo {
 
           var clear = _.find(clearTiles, (tile) => { return (tile.x == x) && (tile.y == y) });
           if (!clear) {
-            this._bmd.context.fillStyle = 'rgba(0, 0, 0, 1.0)';
-            this._bmd.context.fillRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
+            // this._bmd.context.fillStyle = 'rgba(0, 0, 0, 1.0)';
+            // this._bmd.context.fillRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
           } else {
             // clear out the rectangle
-            var alpha = ((clear.r + 2) * 2) / (DrawDistance * 2);
-            this._bmd.context.fillStyle = "rgba(0, 0, 0," + alpha + ")";
-            this._bmd.context.clearRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
-            this._bmd.context.fillRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
+            // var alpha = ((clear.r + 2) * 2) / (DrawDistance * 2);
+            // this._bmd.context.fillStyle = "rgba(0, 0, 0," + alpha + ")";
+            // this._bmd.context.clearRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
+            // this._bmd.context.fillRect(Crimbo.TileSize * x, Crimbo.TileSize * y, 32, 32);
 
           }
         });
@@ -127,7 +151,7 @@ module Crimbo {
     turnComplete() {
       _.each(this.entityViews, (entityView) => { entityView.turnComplete(); });
       this.expireViews();
-      this.updateFogOfWar();
+      //this.updateFogOfWar();
     }
 
     expireViews = () => {
