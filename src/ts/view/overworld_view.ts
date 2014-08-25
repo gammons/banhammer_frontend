@@ -172,10 +172,6 @@ module Crimbo {
 
         // Test each of the edges in this wall against the ray.
         // If the ray intersects any of the edges then the wall must be in the way.
-        // var isInteresting = false;
-        // if ((wall['x'] == 3) && (wall['y'] == 3))
-        //   isInteresting = true;
-        //this.game.debug.geom(lines[0], '#0000FF');
         _.each(lines, (line) => {
           var intersect = Phaser.Line.intersects(line, ray);
           if (intersect) {
