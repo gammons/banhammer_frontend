@@ -141,6 +141,7 @@ module Crimbo {
       // this._coneTexture.context.fillStyle = 'rgb(0, 0, 255)';
       // this._coneTexture.context.moveTo(playerX, playerY);
       for(var i = 0; i < closestPoints.length; i++) {
+        console.log(closestPoints[i].x, closestPoints[i].y);
         this.game.debug.geom(new Phaser.Line(playerX, playerY, closestPoints[i].x, closestPoints[i].y));
         //this._coneTexture.context.lineTo(closestPoints[i].x, closestPoints[i].y);
       }
@@ -267,6 +268,7 @@ module Crimbo {
       var mapHeight = this.gameModel.getOverworld().mapLengthY() * Crimbo.TileSize;
       var bottomY = (playerY + LightRadius > mapHeight) ? mapHeight : (playerY + LightRadius);
       console.log(leftX,rightX,topY,bottomY);
+
       points.push(new Phaser.Point(leftX, topY));
       points.push(new Phaser.Point(rightX, topY));
       points.push(new Phaser.Point(leftX, bottomY));
@@ -280,21 +282,117 @@ module Crimbo {
     }
 
     // this won't work
-//     getClosestTiles() {
-//       // draw a line to the center of the tiles nearest to me
-//       // if that line intersects with the wall of another tile, discard it.  
-//       // if that line only intersects one tile, then we know it is facing the player
-//      var playerX = this.playerView.sprite.x + (Crimbo.TileSize / 2);
-//      var playerY = this.playerView.sprite.y + (Crimbo.TileSize / 2);
-//       _.each(this.getVisibleTiles(), (tile) => {
-//         // draw a ray to the middle of the tile
-//         var tileX = this.getCenterCoordsOf(tile.x);
-//         var tileY = this.getCenterCoordsOf(tile.y);
-//         var line = new Phaser.Line(playerX, playerY, tileX, tileY);
-//         this.game.debug.geom(line);
-//       });
+    getClosestTiles() {
+      // draw a line to the center of the tiles nearest to me
+      // if that line intersects with the wall of another tile, discard it.  
+      // if that line only intersects one tile, then we know it is facing the player
+      var playerX = this.getCenterCoordsOf(this.player.x);
+      var playerY = this.getCenterCoordsOf(this.player.y);
+      console.log("playerX = ",playerX);
+      console.log("playerY = ",playerY);
+      var tileSides = [];
+      var visibleTiles = this.getVisibleTiles();
+      var processedTiles = [];
+      var lines = [];
+      _.each(visibleTiles, (tile) => {
+        var tileX = tile.x * Crimbo.TileSize;
+        var tileY = tile.y * Crimbo.TileSize;
+        var processedTile = {tile: tile, lines: []};
+
+//         var centerTileX = this.getCenterCoordsOf(tile.x);
+//         var centerTileY = this.getCenterCoordsOf(tile.y);
+//         var ray = new Phaser.Line(playerX, playerY, centerTileX, centerTileY);
+//         this.game.debug.geom(ray);
 //
-//     }
+        // for each tile, determine where we are relative to the tile
+        if (playerX < tileX) {
+          var line = new Phaser.Line(tileX, tileY, tileX, tileY + Crimbo.TileSize);  // left wall
+          lines.push(line);
+          processedTile.lines.push(line);
+        }
+          
+        if (playerX > tileX) {
+          var line = new Phaser.Line(tileX + Crimbo.TileSize, tileY, tileX + Crimbo.TileSize, tileY + Crimbo.TileSize); // right wall
+          lines.push(line);
+          processedTile.lines.push(line);
+        }
+
+        // player is above tile
+        if (playerY < tileY) {
+          var line = new Phaser.Line(tileX, tileY, tileX + Crimbo.TileSize, tileY);  // top wall
+          lines.push(line)
+          processedTile.lines.push(line);
+        }
+
+        // player is below tile
+        if (playerY > tileY) {
+          var line = new Phaser.Line(tileX, tileY + Crimbo.TileSize, tileX + Crimbo.TileSize, tileY + Crimbo.TileSize);  // bottom wall
+          lines.push(line)
+          processedTile.lines.push(line);
+        }
+
+        processedTiles.push(processedTile);
+      });
+
+      // _.each(lines, (line) => {
+      //   this.game.debug.geom(line);
+      // });
+
+      //pass #2, draw a ray to each tile and determine if there is an intersection with the lines
+      var closestWalls = []
+      _.each(processedTiles, (processedTile) => {
+        // for each tile's side, shoot a ray from the player to each of the tile's sides
+
+        var closestWall = null;
+        var closestDistance = Number.POSITIVE_INFINITY;
+
+        _.each(processedTile.lines, (currentLine) => {
+
+          var midX = currentLine['start']['x'];
+          if (currentLine['end']['x'] > currentLine['start']['x'])
+            midX = currentLine['start']['x'] + Crimbo.TileSize / 2;
+          var midY = currentLine['start']['y'];
+          if (currentLine['end']['y'] > currentLine['start']['y'])
+            midY = currentLine['start']['y'] + Crimbo.TileSize / 2;
+
+          // shoot a ray at this point.
+          var ray = new Phaser.Line(playerX, playerY, midX, midY);
+
+          // see if any other lines from any other blocks intersect this ray
+          var hasIntersection = false;
+          _.each(lines, (line) => {
+            if (line != currentLine) {
+              if (Phaser.Line.intersects(ray, line))
+                hasIntersection = true;
+            }
+          });
+
+          if (!hasIntersection) {
+            this.game.debug.geom(currentLine, "#0000FF");
+          }
+        });
+
+        // _.each(lines, (line) => {
+        //   var ray = new Phaser.Line(playerX, playerY, centerTileX, centerTileY);
+        //   var intersects = Phaser.Line.intersects(ray, line);
+        //   if (intersects) {
+        //     var distance = this.game.math['distance'](ray.start.x, ray.start.y, line.x, line.y);
+        //     if (distance < closestDistance) {
+        //       closestDistance = distance;
+        //       closestWall = line;
+        //     }
+        //   }
+        // });
+        // closestWalls.push(closestWall);
+        // this.game.debug.geom(closestWall, "#FF0000");
+      });
+
+      // now that we have the closest walls, draw a triangle from the player can remove the bitmap stuff
+      _.each(closestWalls, (closestWall) => {
+        this.game.debug.geom(new Phaser.Line(playerX, playerY, closestWall.start.x, closestWall.start.y));
+        this.game.debug.geom(new Phaser.Line(playerX, playerY, closestWall.end.x, closestWall.end.y));
+      });
+    }
 
 //     getClosestWallFaces() {
 //       var playerX = this.playerView.sprite.x + (Crimbo.TileSize / 2);
@@ -343,17 +441,19 @@ module Crimbo {
 //       return nonIntersectingWalls;
 //     }
 
-    doIt() {
-      // get all segments for viewing area
-      // shoot a ray at each angle
-      // calculate the closest segment for that angle
+    shootRaysAtClosestTiles() {
+      _.each(this.getVisibleTiles(), (tile) => {
+
+      });
     }
 
     turnComplete() {
       _.each(this.entityViews, (entityView) => { entityView.turnComplete(); });
       this.expireViews();
-      this._points = this.getPoints();
-      this.raycastLights();
+      //this._points = this.getPoints();
+      //this.raycastLights();
+      this.getClosestTiles();
+      
       
       //this.getClosestWallFaces();
       //this.updateShadowTexture();

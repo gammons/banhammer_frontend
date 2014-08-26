@@ -18,7 +18,8 @@ module Crimbo {
 
     constructor(player: Crimbo.Player, turns: number, map: Object) {
       this._monsters = [];
-      //this._monsters.push(new Crimbo.Monster());
+      // this._monsters.push(new Crimbo.Monster());
+      // this._monsters.push(new Crimbo.Monster());
       this._player = player;
       this._turns = turns;
       this._items = [];
